@@ -1,0 +1,358 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Light theme is the default, so the resident portal (which has no `.dark`
+     ancestor) always renders light. The officer layout opts in by adding the
+     `dark` class to its root wrapper. */
+  :root {
+    --c-ink: 26 35 50;
+    --c-ink-500: 74 85 104;
+    --c-ink-400: 138 148 166;
+    --c-canvas: 244 246 248;
+    --c-hairline: 232 236 240;
+    --c-hairline-strong: 213 219 227;
+    --c-surface: 255 255 255;
+    --c-surface-soft: 244 246 248;
+    --c-surface-hover: 241 245 249;
+  }
+  .dark {
+    --c-ink: 241 245 249;
+    --c-ink-500: 148 163 184;
+    --c-ink-400: 100 116 139;
+    --c-canvas: 11 16 29;
+    --c-hairline: 30 39 61;
+    --c-hairline-strong: 51 65 85;
+    --c-surface: 19 25 38;
+    --c-surface-soft: 12 16 29;
+    --c-surface-hover: 24 34 57;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-slate-100 text-slate-800;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-blue-700 text-white hover:bg-blue-800 focus:ring-blue-500;
+  }
+  .btn-secondary {
+    @apply btn bg-surface text-ink-500 ring-1 ring-inset ring-hairline-strong hover:bg-surface-soft hover:text-ink focus:ring-slate-400;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+  .input {
+    @apply w-full rounded-lg border border-hairline-strong bg-surface px-3 py-2 text-sm text-ink shadow-sm placeholder:text-ink-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200;
+  }
+  .label {
+    @apply mb-1 block text-sm font-medium text-ink-500;
+  }
+  .card {
+    @apply rounded-xl border border-hairline bg-surface shadow-card;
+  }
+
+  /* ==================================================================
+     Officer portal — dashboard flow
+     ================================================================== */
+
+  /* Surfaces ------------------------------------------------------- */
+  .officer-card {
+    @apply rounded-2xl border border-hairline bg-surface shadow-soft;
+  }
+
+  /* Stat cards ----------------------------------------------------- */
+  .officer-stat {
+    @apply relative overflow-hidden rounded-2xl border border-hairline bg-surface p-5 shadow-soft transition duration-200;
+  }
+  .officer-stat:hover {
+    @apply -translate-y-0.5 shadow-raise;
+  }
+  .officer-stat::after {
+    content: '';
+    @apply absolute inset-x-0 top-0 h-[3px];
+  }
+  .officer-stat--teal::after {
+    @apply bg-gradient-to-r from-teal-600 to-teal-400;
+  }
+  .officer-stat--amber::after {
+    @apply bg-gradient-to-r from-amber-600 to-amber-500;
+  }
+  .officer-stat--purple::after {
+    @apply bg-gradient-to-r from-violet-600 to-violet-500;
+  }
+  .officer-stat--green::after {
+    @apply bg-gradient-to-r from-emerald-600 to-emerald-500;
+  }
+  .officer-stat-icon {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-lg;
+  }
+
+  /* Status pills --------------------------------------------------- */
+  .officer-status {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-[0.2px];
+  }
+  .officer-status-dot {
+    @apply h-1.5 w-1.5 shrink-0 rounded-full;
+  }
+  .officer-status--pending {
+    @apply bg-amber-100 text-amber-800;
+  }
+  .officer-status--pending .officer-status-dot {
+    @apply bg-amber-500;
+  }
+  .officer-status--accepted {
+    @apply bg-teal-100 text-teal-800;
+  }
+  .officer-status--accepted .officer-status-dot {
+    @apply bg-teal-500;
+  }
+  .officer-status--progress {
+    @apply bg-violet-100 text-violet-700;
+  }
+  .officer-status--progress .officer-status-dot {
+    @apply bg-violet-500;
+  }
+  .officer-status--resolved {
+    @apply bg-emerald-100 text-emerald-700;
+  }
+  .officer-status--resolved .officer-status-dot {
+    @apply bg-emerald-500;
+  }
+  .officer-status--closed {
+    @apply bg-slate-100 text-slate-600;
+  }
+  .officer-status--closed .officer-status-dot {
+    @apply bg-slate-400;
+  }
+  .officer-status--rejected {
+    @apply bg-red-100 text-red-700;
+  }
+  .officer-status--rejected .officer-status-dot {
+    @apply bg-red-500;
+  }
+
+  /* Dark counterparts (the officer layout adds `.dark` to its root wrapper,
+     so the resident portal keeps the light palette above). */
+  .dark .officer-status--pending {
+    @apply border border-amber-500/25 bg-amber-500/15 text-amber-300;
+  }
+  .dark .officer-status--pending .officer-status-dot {
+    @apply bg-amber-400;
+  }
+  .dark .officer-status--accepted {
+    @apply border border-teal-500/25 bg-teal-500/15 text-teal-300;
+  }
+  .dark .officer-status--accepted .officer-status-dot {
+    @apply bg-teal-400;
+  }
+  .dark .officer-status--progress {
+    @apply border border-cyan-500/25 bg-cyan-500/15 text-cyan-300;
+  }
+  .dark .officer-status--progress .officer-status-dot {
+    @apply bg-cyan-400;
+  }
+  .dark .officer-status--resolved {
+    @apply border border-emerald-500/25 bg-emerald-500/15 text-emerald-300;
+  }
+  .dark .officer-status--resolved .officer-status-dot {
+    @apply bg-emerald-400;
+  }
+  .dark .officer-status--closed {
+    @apply border border-hairline bg-white/5 text-ink-500;
+  }
+  .dark .officer-status--closed .officer-status-dot {
+    @apply bg-slate-500;
+  }
+  .dark .officer-status--rejected {
+    @apply border border-rose-500/25 bg-rose-500/15 text-rose-300;
+  }
+  .dark .officer-status--rejected .officer-status-dot {
+    @apply bg-rose-400;
+  }
+
+  /* Queue rows ----------------------------------------------------- */
+  .officer-queue-list {
+    @apply flex flex-col gap-2.5;
+  }
+  .officer-queue-item {
+    @apply flex items-center gap-4 rounded-xl border border-hairline bg-surface px-5 py-4 shadow-soft transition duration-200;
+  }
+  .officer-queue-item:hover {
+    @apply -translate-y-px border-hairline-strong shadow-raise;
+  }
+  .officer-queue-icon {
+    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-canvas text-xl;
+  }
+  .officer-tracking {
+    @apply font-mono text-xs font-semibold tracking-[0.4px] text-ink-500;
+  }
+
+  /* Buttons -------------------------------------------------------- */
+  .officer-btn-primary {
+    @apply btn bg-crimson-600 text-white hover:bg-crimson-500 focus:ring-crimson-500;
+  }
+  .officer-btn-secondary {
+    @apply btn border border-hairline-strong bg-surface text-ink-500 hover:bg-surface-soft hover:text-ink focus:ring-slate-400;
+  }
+  .officer-btn-outline {
+    @apply btn border-[1.5px] border-crimson-600 bg-transparent text-crimson-600 hover:bg-crimson-50 focus:ring-crimson-500;
+  }
+  .dark .officer-btn-outline {
+    @apply border-rose-500/60 text-rose-400 hover:bg-rose-500/10;
+  }
+  .officer-btn-ghost {
+    @apply btn bg-transparent text-ink-500 hover:bg-surface-hover hover:text-ink focus:ring-slate-400;
+  }
+  .officer-icon-btn {
+    @apply relative flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-hairline bg-surface text-ink-500 transition hover:border-hairline-strong hover:shadow-soft;
+  }
+  .officer-icon-btn-dot {
+    @apply absolute right-[9px] top-2 h-[7px] w-[7px] rounded-full border-[1.5px] border-surface bg-amber-500;
+  }
+
+  /* Empty state ---------------------------------------------------- */
+  .officer-empty {
+    @apply rounded-2xl border border-hairline bg-surface px-6 py-14 text-center shadow-soft;
+  }
+
+  /* Command bar ---------------------------------------------------- */
+  .officer-command-bar {
+    @apply flex flex-wrap items-center gap-3 rounded-xl border border-hairline bg-surface px-[18px] py-[14px] shadow-soft;
+  }
+  .officer-bar-label {
+    @apply text-xs font-semibold uppercase tracking-[0.5px] text-ink-400;
+  }
+  .officer-divider {
+    @apply mx-1 h-7 w-px bg-hairline;
+  }
+  .officer-count {
+    @apply ml-auto text-xs font-medium text-ink-500;
+  }
+
+  /* Form controls (teal focus) ------------------------------------- */
+  .officer-label {
+    @apply mb-1.5 block text-xs font-semibold text-ink-500;
+  }
+  .officer-input {
+    @apply w-full rounded-xl border-[1.5px] border-hairline bg-surface px-3.5 py-2.5 text-[13px] text-ink outline-none transition placeholder:text-ink-400 focus:border-crimson-500 focus:ring-4 focus:ring-crimson-500/10;
+  }
+  .officer-select {
+    @apply officer-input cursor-pointer appearance-none bg-no-repeat pr-9;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238A94A6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-position: right 12px center;
+  }
+  .officer-textarea {
+    @apply officer-input min-h-[90px] resize-y;
+  }
+
+  /* Alerts --------------------------------------------------------- */
+  .officer-alert {
+    @apply mb-4 flex items-start gap-2.5 rounded-xl border px-4 py-3 text-[13px];
+  }
+  .officer-alert-info {
+    @apply border-teal-100 bg-teal-50 text-teal-700;
+  }
+  .officer-alert-success {
+    @apply border-emerald-100 bg-emerald-50 text-emerald-700;
+  }
+  .officer-alert-danger {
+    @apply border-red-100 bg-red-50 text-red-600;
+  }
+  .dark .officer-alert-info {
+    @apply border-teal-500/25 bg-teal-500/10 text-teal-300;
+  }
+  .dark .officer-alert-success {
+    @apply border-emerald-500/25 bg-emerald-500/10 text-emerald-300;
+  }
+  .dark .officer-alert-danger {
+    @apply border-rose-500/25 bg-rose-500/10 text-rose-300;
+  }
+
+  /* Detail rows (review modal) ------------------------------------- */
+  .officer-info-row {
+    @apply flex justify-between gap-4 border-b border-hairline py-2.5 text-[13px] last:border-b-0;
+  }
+  .officer-info-label {
+    @apply shrink-0 font-medium text-ink-500;
+  }
+  .officer-info-value {
+    @apply text-right font-medium text-ink;
+  }
+  .officer-info-value-left {
+    @apply max-w-[65%] text-left font-medium text-ink;
+  }
+  .officer-tracking-chip {
+    @apply rounded-md border border-teal-100 bg-teal-50 px-2 py-0.5 font-mono text-xs font-bold tracking-[0.4px] text-teal-700;
+  }
+  .dark .officer-tracking-chip {
+    @apply border-teal-500/25 bg-teal-500/15 text-teal-300;
+  }
+  .officer-modal-footer {
+    @apply mt-5 flex flex-wrap justify-end gap-2.5 border-t border-hairline pt-[18px];
+  }
+  .officer-photo-thumb {
+    @apply h-[100px] w-[100px] rounded-xl border border-hairline object-cover;
+  }
+
+  /* Extra button variants ------------------------------------------ */
+  .officer-btn-success {
+    @apply btn bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500;
+  }
+  .officer-btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+  .officer-btn-danger-outline {
+    @apply btn border-[1.5px] border-red-600 bg-transparent text-red-600 hover:bg-red-50 focus:ring-red-500;
+  }
+  .dark .officer-btn-danger-outline {
+    @apply border-rose-500/60 text-rose-400 hover:bg-rose-500/10;
+  }
+
+  /* Toasts --------------------------------------------------------- */
+  .officer-toast-container {
+    @apply pointer-events-none fixed bottom-6 right-6 z-[500] flex flex-col gap-2.5;
+  }
+  .officer-toast {
+    @apply pointer-events-auto flex max-w-[380px] items-center gap-2.5 rounded-xl border px-5 py-3.5 text-[13px] font-semibold shadow-lift;
+    animation: officerToastIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .officer-toast--success {
+    @apply border-emerald-200 bg-emerald-50 text-emerald-800;
+  }
+  .officer-toast--error {
+    @apply border-red-200 bg-red-50 text-red-800;
+  }
+  .officer-toast--info {
+    @apply border-teal-100 bg-teal-50 text-teal-700;
+  }
+  .dark .officer-toast--success {
+    @apply border-emerald-500/30 bg-emerald-500/15 text-emerald-200;
+  }
+  .dark .officer-toast--error {
+    @apply border-rose-500/30 bg-rose-500/15 text-rose-200;
+  }
+  .dark .officer-toast--info {
+    @apply border-teal-500/30 bg-teal-500/15 text-teal-200;
+  }
+}
+
+@keyframes officerToastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
