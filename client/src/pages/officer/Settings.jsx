@@ -36,7 +36,12 @@ export default function Settings() {
             <dt className="text-xs font-medium uppercase tracking-wide text-ink-400">Barangay</dt>
             <dd className="mt-1 text-sm text-ink">{BARANGAY_NAME}</dd>
           </div>
-
+          <div>
+            <dt className="text-xs font-medium uppercase tracking-wide text-ink-400">
+              Referral mechanism
+            </dt>
+            <dd className="mt-1 text-sm text-ink">Rule-based (category default target)</dd>
+          </div>
         </dl>
       </div>
     </div>
