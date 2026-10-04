@@ -211,6 +211,13 @@ export default function Landing() {
               </Link>
             </div>
 
+            <Link
+              to="/submit-complaint?guest=true"
+              className="mt-3 inline-block text-xs font-medium text-slate-500 transition hover:text-blue-800 hover:underline"
+            >
+              or continue without registering →
+            </Link>
+
             <div className="mt-4 flex items-center gap-2 text-sm text-slate-500">
               Already have an account?
               <Link to="/login" className="inline-flex items-center gap-0.5 font-semibold text-blue-800 hover:underline">
