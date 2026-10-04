@@ -115,6 +115,7 @@ export default function Landing() {
   const [trackBusy, setTrackBusy] = useState(false);
   const [trackError, setTrackError] = useState('');
   const [trackResult, setTrackResult] = useState(null);
+  const [categoryMap, setCategoryMap] = useState({});
 
   async function handleTrack(e) {
     e.preventDefault();
@@ -129,6 +130,19 @@ export default function Landing() {
     try {
       const res = await api.get(`/complaints/track/${encodeURIComponent(id)}`);
       setTrackResult(res.data);
+      // The public payload carries category_id only, so resolve the label once.
+      if (res.data?.category_id && Object.keys(categoryMap).length === 0) {
+        api
+          .get('/categories')
+          .then(({ data }) => {
+            const map = {};
+            (data || []).forEach((c) => {
+              map[c.id] = c.name;
+            });
+            setCategoryMap(map);
+          })
+          .catch(() => {});
+      }
     } catch (err) {
       setTrackError(
         err.status === 404
@@ -343,8 +357,10 @@ export default function Landing() {
                     <div className="mt-0.5 font-mono text-lg font-bold text-slate-900">
                       {trackResult.tracking_id}
                     </div>
-                    {trackResult.category && (
-                      <div className="mt-1 text-sm text-slate-500">{trackResult.category}</div>
+                    {trackResult.category_id && (
+                      <div className="mt-1 text-sm text-slate-500">
+                        {categoryMap[trackResult.category_id] || 'Uncategorized'}
+                      </div>
                     )}
                     <div className="mt-1 text-xs text-slate-400">
                       Submitted {formatDateTime(trackResult.submitted_at)}
@@ -358,23 +374,13 @@ export default function Landing() {
                     {STATUS_META[trackResult.status]?.label || trackResult.status}
                   </span>
                 </div>
-              </div>
 
-              {(trackResult.status === 'resolved' || trackResult.status === 'closed') && (
-                <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-                  <div className="text-sm font-semibold text-emerald-800">Resolution</div>
-                  <p className="mt-1 text-sm text-emerald-700">
-                    {trackResult.resolution_remarks || 'This complaint has been resolved.'}
+                {trackResult.description && (
+                  <p className="mt-4 whitespace-pre-line border-t border-slate-100 pt-4 text-sm text-slate-600">
+                    {trackResult.description}
                   </p>
-                  {trackResult.resolution_photo_url && (
-                    <img
-                      src={trackResult.resolution_photo_url}
-                      alt="Resolution proof"
-                      className="mt-3 w-full rounded-lg object-cover"
-                    />
-                  )}
-                </div>
-              )}
+                )}
+              </div>
 
               <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h3 className="mb-4 text-sm font-semibold text-slate-900">Status Timeline</h3>
@@ -382,7 +388,7 @@ export default function Landing() {
                   <ol className="relative space-y-5 border-l border-slate-200 pl-6">
                     {trackResult.action_log_entries.map((entry, i) => {
                       const meta =
-                        ENTRY_TYPE_META[entry.entry_type] || { label: entry.entry_type, icon: '•' };
+                        ENTRY_TYPE_META[entry.type] || { label: entry.type, icon: '•' };
                       const isLast = i === trackResult.action_log_entries.length - 1;
                       return (
                         <li key={i} className="relative">
@@ -394,9 +400,9 @@ export default function Landing() {
                             {meta.icon}
                           </span>
                           <div className="text-sm font-semibold text-slate-900">{meta.label}</div>
-                          {entry.description && (
+                          {entry.text && (
                             <div className="whitespace-pre-line text-sm text-slate-600">
-                              {entry.description}
+                              {entry.text}
                             </div>
                           )}
                           <div className="mt-0.5 text-xs text-slate-400">
