@@ -94,7 +94,7 @@ function NextTimeline() {
   );
 }
 
-function Confirmation({ trackingId }) {
+function Confirmation({ trackingId, isGuest }) {
   return (
     <div className="mx-auto max-w-md space-y-6 py-6 text-center">
       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl text-emerald-700">
@@ -123,10 +123,17 @@ function Confirmation({ trackingId }) {
       </div>
 
       <div className="space-y-2.5">
-        <Link to={`/resident/track?id=${trackingId}`} className="btn-primary w-full">
+        <Link
+          to={
+            isGuest
+              ? `/?id=${encodeURIComponent(trackingId)}#track`
+              : `/resident/track?id=${trackingId}`
+          }
+          className="btn-primary w-full"
+        >
           ⊕ Track Report
         </Link>
-        <Link to="/resident" className="btn-secondary w-full">
+        <Link to={isGuest ? '/' : '/resident'} className="btn-secondary w-full">
           ⌂ Go to Home
         </Link>
       </div>
@@ -255,7 +262,7 @@ export default function SubmitComplaint() {
     }
   }
 
-  if (submitted) return <Confirmation trackingId={submitted.tracking_id} />;
+  if (submitted) return <Confirmation trackingId={submitted.tracking_id} isGuest={isGuest} />;
 
   const selectedCategory = categories.find((c) => c.id === categoryId);
   const categoryLabel =
