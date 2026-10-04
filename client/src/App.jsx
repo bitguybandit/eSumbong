@@ -32,7 +32,16 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       {/* Public guest submission — reachable without auth (see ?guest=true). */}
-      <Route path="/submit-complaint" element={<SubmitComplaint />} />
+      <Route
+        path="/submit-complaint"
+        element={
+          <div className="min-h-screen w-full bg-slate-50 flex justify-center p-4 md:p-8">
+            <div className="w-full max-w-5xl bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+              <SubmitComplaint />
+            </div>
+          </div>
+        }
+      />
 
       <Route
         path="/resident"
