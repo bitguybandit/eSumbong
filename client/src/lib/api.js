@@ -6,7 +6,9 @@ const baseURL = import.meta.env.VITE_API_URL || '/api';
 const api = axios.create({ baseURL });
 
 // Attach the current Supabase access token to every request.
+// Requests may opt out with `skipAuth: true` (e.g. guest submissions).
 api.interceptors.request.use(async (config) => {
+  if (config.skipAuth) return config;
   const { data } = await supabase.auth.getSession();
   const token = data?.session?.access_token;
   if (token) {
