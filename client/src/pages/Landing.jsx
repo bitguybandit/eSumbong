@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import Logo from '../components/Logo';
 import StatusBadge from '../components/StatusBadge';
 import api from '../lib/api';
@@ -118,19 +118,14 @@ function IconPhone({ className = 'h-5 w-5' }) {
 }
 
 export default function Landing() {
+  const [searchParams] = useSearchParams();
   const [trackingId, setTrackingId] = useState('');
   const [trackBusy, setTrackBusy] = useState(false);
   const [trackError, setTrackError] = useState('');
   const [trackResult, setTrackResult] = useState(null);
   const [categoryMap, setCategoryMap] = useState({});
 
-  async function handleTrack(e) {
-    e.preventDefault();
-    const id = trackingId.trim();
-    if (!id) {
-      setTrackError('Please enter your Tracking ID.');
-      return;
-    }
+  async function runTrack(id) {
     setTrackBusy(true);
     setTrackError('');
     setTrackResult(null);
@@ -160,6 +155,30 @@ export default function Landing() {
       setTrackBusy(false);
     }
   }
+
+  function handleTrack(e) {
+    e.preventDefault();
+    const id = trackingId.trim();
+    if (!id) {
+      setTrackError('Please enter your Tracking ID.');
+      return;
+    }
+    runTrack(id);
+  }
+
+  // Deep link support (e.g. /?id=ES-2026-0008#track after a guest submission).
+  useEffect(() => {
+    const id = searchParams.get('id');
+    if (!id) return;
+    setTrackingId(id);
+    runTrack(id);
+    // Let the result markup settle before bringing the section into view.
+    const timer = setTimeout(() => {
+      document.getElementById('track')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen scroll-smooth bg-white text-slate-900">
