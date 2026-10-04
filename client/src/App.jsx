@@ -31,6 +31,8 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      {/* Public guest submission — reachable without auth (see ?guest=true). */}
+      <Route path="/submit-complaint" element={<SubmitComplaint />} />
 
       <Route
         path="/resident"
