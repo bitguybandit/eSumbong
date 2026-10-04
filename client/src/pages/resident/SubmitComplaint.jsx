@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../lib/api';
 import MapPicker from '../../components/MapPicker';
 import PhotoUpload from '../../components/PhotoUpload';
@@ -137,6 +137,10 @@ function Confirmation({ trackingId }) {
 export default function SubmitComplaint() {
   const navigate = useNavigate();
   const { profile } = useAuth();
+  const [searchParams] = useSearchParams();
+  // Guest mode (?guest=true): an unauthenticated visitor filing a complaint.
+  // They are already anonymous, so the anonymity toggle is not shown.
+  const isGuest = searchParams.get('guest') === 'true';
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const steps = isDesktop ? DESKTOP_STEPS : MOBILE_STEPS;
   const [categories, setCategories] = useState([]);
@@ -236,7 +240,13 @@ export default function SubmitComplaint() {
         photo_path: photoUrl || null,
         anonymous,
       };
-      const res = await api.post('/complaints', payload);
+      const res = await api.post(
+        '/complaints',
+        payload,
+        // Guest submissions are unauthenticated: send no Authorization header
+        // so the API records resident_id = NULL.
+        isGuest ? { skipAuth: true } : undefined
+      );
       setSubmitted(res.data);
     } catch (err) {
       setError(err.message);
@@ -427,7 +437,7 @@ export default function SubmitComplaint() {
             />
           </div>
 
-          {profile && (
+          {profile && !isGuest && (
             <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
               <div>
                 <div className="text-sm font-semibold text-slate-900">Submit Anonymously</div>
@@ -467,7 +477,7 @@ export default function SubmitComplaint() {
               <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Description</dt>
               <dd className="mt-1 whitespace-pre-line text-sm text-slate-800">{description || '—'}</dd>
             </div>
-            {profile && (
+            {profile && !isGuest && (
               <div className="flex items-center justify-between border-t border-slate-100 pt-3">
                 <dt className="text-sm text-slate-700">Submit anonymously</dt>
                 <dd className={`text-sm font-medium ${anonymous ? 'text-emerald-600' : 'text-slate-500'}`}>
