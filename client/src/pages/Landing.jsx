@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
+import api from '../lib/api';
+import { ENTRY_TYPE_META, STATUS_META, formatDateTime } from '../lib/constants';
 
 const PROCESS_STEPS = [
   {
@@ -109,13 +111,33 @@ function IconPhone({ className = 'h-5 w-5' }) {
 }
 
 export default function Landing() {
-  const navigate = useNavigate();
   const [trackingId, setTrackingId] = useState('');
+  const [trackBusy, setTrackBusy] = useState(false);
+  const [trackError, setTrackError] = useState('');
+  const [trackResult, setTrackResult] = useState(null);
 
-  function handleTrack(e) {
+  async function handleTrack(e) {
     e.preventDefault();
     const id = trackingId.trim();
-    if (id) navigate(`/resident/track?id=${encodeURIComponent(id)}`);
+    if (!id) {
+      setTrackError('Please enter your Tracking ID.');
+      return;
+    }
+    setTrackBusy(true);
+    setTrackError('');
+    setTrackResult(null);
+    try {
+      const res = await api.get(`/complaints/track/${encodeURIComponent(id)}`);
+      setTrackResult(res.data);
+    } catch (err) {
+      setTrackError(
+        err.status === 404
+          ? 'No complaint found with that Tracking ID. Please check and try again.'
+          : err.message
+      );
+    } finally {
+      setTrackBusy(false);
+    }
   }
 
   return (
@@ -200,13 +222,18 @@ export default function Landing() {
 
           <div className="lg:col-span-5">
             <div className="mx-auto w-full max-w-md overflow-hidden rounded-xl bg-white shadow-xl ring-1 ring-slate-100">
-              <div className="relative h-72 bg-gradient-to-br from-blue-700 via-blue-800 to-blue-950">
+              <div className="relative h-72">
+                <img
+                  src="/bhall.jpg"
+                  alt="Barangay San Isidro Assistance Center"
+                  className="h-full w-full object-cover"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-blue-900/85 via-blue-900/20 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <span className="mb-1 inline-block rounded bg-white/20 px-2.5 py-0.5 text-xs font-semibold backdrop-blur">
                     Official Desk
                   </span>
-                  <p className="text-base font-semibold leading-tight">Barangay San Isidro Assistance Center</p>
+                  <p className="text-base font-semibold leading-tight">Barangay San Jose Assistance Center</p>
                   <p className="text-xs text-blue-100">Open weekdays 8:00 AM – 5:00 PM</p>
                 </div>
               </div>
@@ -280,16 +307,104 @@ export default function Landing() {
             </div>
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-blue-800 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-900"
+              disabled={trackBusy}
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-blue-800 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-900 disabled:opacity-60"
             >
               <IconSearch />
-              Track Status
+              {trackBusy ? 'Checking…' : 'Track Status'}
             </button>
           </form>
           <div className="mt-4 flex items-center justify-center gap-2 text-xs text-slate-500">
             <IconLock className="h-3.5 w-3.5" />
             Codes are generated automatically when a submission is finalized.
           </div>
+
+          {trackError && (
+            <p className="mx-auto mt-6 max-w-lg rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {trackError}
+            </p>
+          )}
+
+          {trackResult && (
+            <div className="mx-auto mt-8 max-w-lg text-left">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Tracking ID
+                    </div>
+                    <div className="mt-0.5 font-mono text-lg font-bold text-slate-900">
+                      {trackResult.tracking_id}
+                    </div>
+                    {trackResult.category && (
+                      <div className="mt-1 text-sm text-slate-500">{trackResult.category}</div>
+                    )}
+                    <div className="mt-1 text-xs text-slate-400">
+                      Submitted {formatDateTime(trackResult.submitted_at)}
+                    </div>
+                  </div>
+                  <span
+                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ring-1 ${
+                      STATUS_META[trackResult.status]?.badge || 'bg-slate-100 text-slate-700 ring-slate-500/20'
+                    }`}
+                  >
+                    {STATUS_META[trackResult.status]?.label || trackResult.status}
+                  </span>
+                </div>
+              </div>
+
+              {(trackResult.status === 'resolved' || trackResult.status === 'closed') && (
+                <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                  <div className="text-sm font-semibold text-emerald-800">Resolution</div>
+                  <p className="mt-1 text-sm text-emerald-700">
+                    {trackResult.resolution_remarks || 'This complaint has been resolved.'}
+                  </p>
+                  {trackResult.resolution_photo_url && (
+                    <img
+                      src={trackResult.resolution_photo_url}
+                      alt="Resolution proof"
+                      className="mt-3 w-full rounded-lg object-cover"
+                    />
+                  )}
+                </div>
+              )}
+
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="mb-4 text-sm font-semibold text-slate-900">Status Timeline</h3>
+                {trackResult.action_log_entries?.length > 0 ? (
+                  <ol className="relative space-y-5 border-l border-slate-200 pl-6">
+                    {trackResult.action_log_entries.map((entry, i) => {
+                      const meta =
+                        ENTRY_TYPE_META[entry.entry_type] || { label: entry.entry_type, icon: '•' };
+                      const isLast = i === trackResult.action_log_entries.length - 1;
+                      return (
+                        <li key={i} className="relative">
+                          <span
+                            className={`absolute -left-[34px] flex h-6 w-6 items-center justify-center rounded-full text-xs ${
+                              isLast ? 'bg-blue-600 text-white' : 'bg-emerald-100 text-emerald-700'
+                            }`}
+                          >
+                            {meta.icon}
+                          </span>
+                          <div className="text-sm font-semibold text-slate-900">{meta.label}</div>
+                          {entry.description && (
+                            <div className="whitespace-pre-line text-sm text-slate-600">
+                              {entry.description}
+                            </div>
+                          )}
+                          <div className="mt-0.5 text-xs text-slate-400">
+                            {formatDateTime(entry.created_at)}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                ) : (
+                  <p className="text-sm text-slate-400">No status updates yet.</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
