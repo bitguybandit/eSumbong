@@ -1,6 +1,6 @@
 -- =============================================================================
 -- eSumbong — Supabase PostgreSQL schema
--- Run this entire script in the Supabase SQL Editor.
+
 --
 --  • Supabase Auth manages authentication users in `auth.users`.
 --  • The `on_auth_user_created` trigger mirrors each auth user into `users`.
