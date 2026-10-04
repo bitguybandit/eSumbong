@@ -89,9 +89,9 @@ router.get(
   })
 );
 
-// GET /api/complaints/track/:trackingId — public tracking by ID (no auth needed,
-// so anonymous reporters can check status). Returns a strictly limited,
-// non-personal payload: never resident_id, names, emails, or other PII.
+// GET /api/complaints/track/:trackingId — public tracking by ID (no auth
+// middleware), so guests/anonymous reporters can check status. Returns a
+// strictly limited payload: never resident_id, names, emails, or other PII.
 router.get(
   '/track/:trackingId',
   asyncHandler(async (req, res) => {
@@ -102,9 +102,7 @@ router.get(
 
     const { data: complaint, error } = await supabase
       .from('complaints')
-      .select(
-        'id, tracking_id, status, category:categories(name), created_at, resolution_remarks, resolution_photo_path'
-      )
+      .select('id, tracking_id, status, category_id, description, created_at')
       .ilike('tracking_id', trackingId)
       .maybeSingle();
 
@@ -122,11 +120,14 @@ router.get(
     res.json({
       tracking_id: complaint.tracking_id,
       status: complaint.status,
-      category: complaint.category?.name ?? null,
+      category_id: complaint.category_id,
+      description: complaint.description,
       submitted_at: complaint.created_at,
-      resolution_remarks: complaint.resolution_remarks,
-      resolution_photo_url: complaint.resolution_photo_path,
-      action_log_entries: history || [],
+      action_log_entries: (history || []).map((e) => ({
+        type: e.entry_type,
+        text: e.description,
+        created_at: e.created_at,
+      })),
     });
   })
 );
