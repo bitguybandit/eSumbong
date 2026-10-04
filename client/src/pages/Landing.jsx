@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
+import StatusBadge from '../components/StatusBadge';
 import api from '../lib/api';
-import { ENTRY_TYPE_META, STATUS_META, formatDateTime } from '../lib/constants';
+import { ENTRY_TYPE_META, formatDateTime } from '../lib/constants';
+
+const TRACK_ENTRY_META = {
+  status_change: { label: 'Status Updated', icon: '🔄' },
+  action: { label: 'Action Taken', icon: '🛠️' },
+  contact: { label: 'Contact Made', icon: '📞' },
+};
 
 const PROCESS_STEPS = [
   {
@@ -366,13 +373,7 @@ export default function Landing() {
                       Submitted {formatDateTime(trackResult.submitted_at)}
                     </div>
                   </div>
-                  <span
-                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ring-1 ${
-                      STATUS_META[trackResult.status]?.badge || 'bg-slate-100 text-slate-700 ring-slate-500/20'
-                    }`}
-                  >
-                    {STATUS_META[trackResult.status]?.label || trackResult.status}
-                  </span>
+                  <StatusBadge status={trackResult.status} className="shrink-0" />
                 </div>
 
                 {trackResult.description && (
@@ -388,7 +389,9 @@ export default function Landing() {
                   <ol className="relative space-y-5 border-l border-slate-200 pl-6">
                     {trackResult.action_log_entries.map((entry, i) => {
                       const meta =
-                        ENTRY_TYPE_META[entry.type] || { label: entry.type, icon: '•' };
+                        TRACK_ENTRY_META[entry.type] ||
+                        ENTRY_TYPE_META[entry.type] ||
+                        { label: entry.type, icon: '•' };
                       const isLast = i === trackResult.action_log_entries.length - 1;
                       return (
                         <li key={i} className="relative">
