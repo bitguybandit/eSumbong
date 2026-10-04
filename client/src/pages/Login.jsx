@@ -399,6 +399,22 @@ export default function Login() {
                   {passwordField}
                   {submitButton}
                 </form>
+
+                <div className="my-5 flex items-center gap-3">
+                  <span className="h-px flex-1 bg-slate-200" />
+                  <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">or</span>
+                  <span className="h-px flex-1 bg-slate-200" />
+                </div>
+
+                <Link
+                  to="/submit-complaint?guest=true"
+                  className="flex w-full flex-col items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-3 text-center transition hover:border-blue-400 hover:bg-blue-50"
+                >
+                  <span className="text-sm font-semibold text-slate-800">Continue Without Registering</span>
+                  <span className="mt-0.5 text-xs text-slate-500">
+                    Submit a complaint anonymously without creating an account.
+                  </span>
+                </Link>
               </div>
 
               <div className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-4 text-sm text-slate-500">
