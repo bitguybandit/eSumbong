@@ -131,7 +131,7 @@ The system does **not** automatically route complaints to external offices. The 
 
 ## System Architecture
 
-![eSumbong System Architecture](docs/architecture/eSumbong-System-Architecture.png)
+![eSumbong System Architecture](docs/architecture/eSumbong_System_Architecture.png)
 
 The system uses a layered web architecture consisting of:
 
@@ -166,7 +166,7 @@ Authentication is handled separately through **Supabase Auth**, which manages au
 
 ## User Flow
 
-![eSumbong User Flow](docs/user-flow/eSumbong-User-Flow.png)
+![eSumbong User Flow](docs/user-flow/eSumbong-UserFlow.png)
 
 The user flow covers the major processes of both Residents and Barangay Officers.
 
