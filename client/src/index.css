@@ -199,13 +199,13 @@
 
   /* Buttons -------------------------------------------------------- */
   .officer-btn-primary {
-    @apply btn bg-crimson-600 text-white hover:bg-crimson-500 focus:ring-crimson-500;
+    @apply btn bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
   }
   .officer-btn-secondary {
     @apply btn border border-hairline-strong bg-surface text-ink-500 hover:bg-surface-soft hover:text-ink focus:ring-slate-400;
   }
   .officer-btn-outline {
-    @apply btn border-[1.5px] border-crimson-600 bg-transparent text-crimson-600 hover:bg-crimson-50 focus:ring-crimson-500;
+    @apply btn border-[1.5px] border-blue-600 bg-transparent text-blue-600 hover:bg-blue-50 focus:ring-blue-500;
   }
   .dark .officer-btn-outline {
     @apply border-rose-500/60 text-rose-400 hover:bg-rose-500/10;
