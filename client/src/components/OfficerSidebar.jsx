@@ -186,7 +186,7 @@ export default function OfficerSidebar({ onNavigate }) {
     <aside className="flex h-full w-[268px] shrink-0 flex-col border-r border-hairline bg-surface text-ink dark:border-transparent dark:bg-shell-900 dark:text-white">
       {/* Brand */}
       <div className="border-b border-hairline px-5 pb-4 pt-5 dark:border-white/10">
-        <Logo size="md" className="dark:brightness-0 dark:invert" />
+        <Logo size="md" />
         <span className="mt-1.5 block truncate text-[11px] text-ink-400 dark:text-white/45">{BARANGAY_NAME}</span>
       </div>
 
