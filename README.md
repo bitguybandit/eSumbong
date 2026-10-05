@@ -131,7 +131,7 @@ The system does **not** automatically route complaints to external offices. The 
 
 ## System Architecture
 
-![eSumbong System Architecture](docs/eSumbong_System_Architecture.png)
+![eSumbong System Architecture](docs/eSumbong_System_Architecture_Diagram.png)
 
 The system uses a layered web architecture consisting of:
 
