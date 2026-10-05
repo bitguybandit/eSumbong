@@ -103,8 +103,8 @@ const SYSTEM = [{ to: '/officer/settings', label: 'Settings', Icon: IconSettings
 
 function LiveTag() {
   return (
-    <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.4px] text-emerald-300">
-      <span className="h-1 w-1 rounded-full bg-emerald-300" />
+    <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-200 bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.4px] text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-500/15 dark:text-emerald-300">
+      <span className="h-1 w-1 rounded-full bg-emerald-600 dark:bg-emerald-300" />
       Live
     </span>
   );
@@ -112,7 +112,7 @@ function LiveTag() {
 
 function SoonTag() {
   return (
-    <span className="shrink-0 rounded-full border border-white/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.4px] text-white/40">
+    <span className="shrink-0 rounded-full border border-hairline-strong px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.4px] text-ink-400 dark:border-white/15 dark:text-white/40">
       Soon
     </span>
   );
@@ -133,7 +133,7 @@ function NavItem({ item }) {
     return (
       <span
         title={`${item.label} — coming soon`}
-        className="flex cursor-not-allowed items-center gap-3 rounded-full py-2.5 pl-3.5 pr-3.5 text-[13px] font-medium text-white/30"
+        className="flex cursor-not-allowed items-center gap-3 rounded-full py-2.5 pl-3.5 pr-3.5 text-[13px] font-medium text-ink-400 dark:text-white/30"
       >
         {content}
       </span>
@@ -147,8 +147,8 @@ function NavItem({ item }) {
       className={({ isActive }) =>
         `relative flex items-center gap-3 py-2.5 text-[13px] transition ${
           isActive
-            ? '-mr-3 rounded-l-full rounded-r-none bg-crimson-600 pl-3.5 pr-4 font-semibold text-white shadow-[0_4px_12px_rgba(139,21,40,0.45)]'
-            : 'rounded-full pl-3.5 pr-3.5 font-medium text-white/70 hover:bg-white/10 hover:text-white'
+            ? '-mr-3 rounded-l-full rounded-r-none bg-blue-600 pl-3.5 pr-4 font-semibold text-white shadow-[0_4px_12px_rgba(37,99,235,0.45)]'
+            : 'rounded-full pl-3.5 pr-3.5 font-medium text-ink-500 hover:bg-surface-hover hover:text-ink dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
         }`
       }
     >
@@ -167,7 +167,7 @@ function PendingBadge() {
   }, []);
   if (!count) return null;
   return (
-    <span className="ml-auto rounded-full border border-amber-500/30 bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-400">
+    <span className="ml-auto rounded-full border border-amber-200 bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400">
       {count}
     </span>
   );
@@ -183,16 +183,16 @@ export default function OfficerSidebar({ onNavigate }) {
   }
 
   return (
-    <aside className="flex h-full w-[268px] shrink-0 flex-col bg-shell-900 text-white">
+    <aside className="flex h-full w-[268px] shrink-0 flex-col border-r border-hairline bg-surface text-ink dark:border-transparent dark:bg-shell-900 dark:text-white">
       {/* Brand */}
-      <div className="border-b border-white/10 px-5 pb-4 pt-5">
-        <Logo inverted size="md" />
-        <span className="mt-1.5 block truncate text-[11px] text-white/45">{BARANGAY_NAME}</span>
+      <div className="border-b border-hairline px-5 pb-4 pt-5 dark:border-white/10">
+        <Logo size="md" className="dark:brightness-0 dark:invert" />
+        <span className="mt-1.5 block truncate text-[11px] text-ink-400 dark:text-white/45">{BARANGAY_NAME}</span>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-3 py-4">
-        <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[1.2px] text-white/40">
+        <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[1.2px] text-ink-400 dark:text-white/40">
           Main Menu
         </p>
         <div className="space-y-0.5">
@@ -201,7 +201,7 @@ export default function OfficerSidebar({ onNavigate }) {
           ))}
         </div>
 
-        <p className="px-3 pb-2 pt-6 text-[10px] font-semibold uppercase tracking-[1.2px] text-white/40">
+        <p className="px-3 pb-2 pt-6 text-[10px] font-semibold uppercase tracking-[1.2px] text-ink-400 dark:text-white/40">
           Analytics &amp; Reports
         </p>
         <div className="space-y-0.5">
@@ -210,7 +210,7 @@ export default function OfficerSidebar({ onNavigate }) {
           ))}
         </div>
 
-        <p className="px-3 pb-2 pt-6 text-[10px] font-semibold uppercase tracking-[1.2px] text-white/40">
+        <p className="px-3 pb-2 pt-6 text-[10px] font-semibold uppercase tracking-[1.2px] text-ink-400 dark:text-white/40">
           System
         </p>
         <div className="space-y-0.5">
@@ -221,19 +221,19 @@ export default function OfficerSidebar({ onNavigate }) {
       </nav>
 
       {/* Profile */}
-      <div className="flex items-center gap-3 border-t border-white/10 px-5 py-4">
-        <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-sm font-semibold text-white">
+      <div className="flex items-center gap-3 border-t border-hairline px-5 py-4 dark:border-white/10">
+        <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full border border-hairline-strong bg-surface-soft text-sm font-semibold text-ink dark:border-white/15 dark:bg-white/10 dark:text-white">
           {initials(profile?.full_name)}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[13px] font-semibold text-white">{profile?.full_name}</div>
-          <div className="text-[11px] text-white/45">Barangay Officer</div>
+          <div className="truncate text-[13px] font-semibold text-ink dark:text-white">{profile?.full_name}</div>
+          <div className="text-[11px] text-ink-400 dark:text-white/45">Barangay Officer</div>
         </div>
         <button
           onClick={handleSignOut}
           title="Sign out"
           aria-label="Sign out"
-          className="flex rounded-md p-1.5 text-white/50 transition hover:bg-white/10 hover:text-white"
+          className="flex rounded-md p-1.5 text-ink-400 transition hover:bg-surface-hover hover:text-ink dark:text-white/50 dark:hover:bg-white/10 dark:hover:text-white"
         >
           <IconLogout />
         </button>
