@@ -2,7 +2,29 @@
 
 ### A Web-Based Complaint Reporting and Resolution System for Barangay Local Government Units
 
-eSumbong is a web-based complaint reporting and resolution system designed to help residents submit community complaints and allow Barangay Officers to review, process, refer, resolve, and close those complaints in a structured manner.
+eSumbong is a web-based complaint reporting and resolution system designed to help residents submit community complaints and allow Barangay Officers to review, process, refer, resolve, and close complaints in a structured manner.
+
+Developed as a Bachelor of Science in Information Technology software project at **Western Institute of Technology**.
+
+---
+
+## Table of Contents
+
+- [Project Scope](#project-scope)
+- [Core Features](#core-features)
+- [Complaint Workflow](#complaint-workflow)
+- [Referral Mechanism](#referral-mechanism)
+- [System Architecture](#system-architecture)
+- [Database / ERD](#database--erd)
+- [User Flow](#user-flow)
+- [Sitemap](#sitemap)
+- [Technology Stack](#technology-stack)
+- [Project Status](#project-status)
+- [Development Approach](#development-approach)
+- [Getting Started](#getting-started)
+- [Guest Access](#guest-access)
+- [Officer Access](#officer-access)
+- [Project Information](#project-information)
 
 ---
 
@@ -10,10 +32,21 @@ eSumbong is a web-based complaint reporting and resolution system designed to he
 
 The current pilot MVP consists of two primary user roles:
 
-- **Resident** — submits and tracks complaints.
-- **Barangay Officer** — reviews, categorizes, refers, processes, resolves, and closes complaints.
+### Resident
 
-> There is no administrator or municipal-department portal in the MVP scope.
+Residents can submit community complaints, provide relevant details and evidence, and track the progress of their complaints.
+
+### Barangay Officer
+
+Barangay Officers can review, validate, categorize, refer, process, resolve, and close submitted complaints.
+
+The current MVP does **not** include:
+
+- Administrator accounts
+- Municipal Officer accounts
+- Department Officer accounts
+- Automatic complaint routing
+- Automatic referral to external offices
 
 ---
 
@@ -23,11 +56,12 @@ The current pilot MVP consists of two primary user roles:
 
 - Account registration and login
 - Complaint submission
-- Complaint description and category
+- Complaint description and categorization
 - Photo attachment
-- Complaint location selection (Leaflet + OpenStreetMap)
+- Complaint location selection using a map
 - Anonymous reporting
-- Complaint tracking (My Complaints + tracking ID)
+- Guest complaint submission without an account
+- Complaint tracking using a Tracking ID
 - Status notifications
 
 ### Barangay Officer
@@ -39,19 +73,22 @@ The current pilot MVP consists of two primary user roles:
 - Referral suggestion review
 - Referral acceptance or override
 - Action and contact logging
-- Resolution remarks and photos
+- Resolution remarks
+- Resolution photo attachment
 - Complaint closure
 
 ---
 
 ## Complaint Workflow
 
+The standard complaint lifecycle follows this process:
+
 ```text
 SUBMITTED
     ↓
-UNDER REVIEW        (shown in the UI as "Accepted" for barangay action)
+UNDER REVIEW
     ↓
-REFERRED            (shown in the UI as "In Progress" while actions are logged)
+REFERRED
     ↓
 RESOLVED
     ↓
@@ -66,89 +103,150 @@ UNDER REVIEW
 REJECTED
 ```
 
+### Workflow Description
+
+1. **Submitted** — A resident submits a complaint through the system.
+2. **Under Review** — A Barangay Officer reviews and validates the complaint.
+3. **Referred** — The complaint is referred to an appropriate target when necessary.
+4. **Resolved** — The complaint has been addressed and resolution details are recorded.
+5. **Closed** — The complaint process is completed and the case is formally closed.
+6. **Rejected** — A complaint may be rejected when it is determined to be invalid or inappropriate, with a reason recorded by the officer.
+
 ---
 
 ## Referral Mechanism
 
 eSumbong uses a **rule-based referral suggestion mechanism**.
 
-A complaint category may have a `default_referral_target_id`. When an officer reviews a complaint, the system provides the suggested target. The Barangay Officer may:
+Each complaint category may have a default referral target. When a Barangay Officer reviews a complaint, the system provides the corresponding suggested referral target.
 
-1. Accept the suggested referral target, or
-2. Override it with another appropriate referral target.
+The Barangay Officer can:
 
-The system does **not** automatically route complaints to external offices.
+- **Accept** the suggested referral target
+- **Override** the suggestion with another appropriate referral target
+
+The system does **not** automatically route complaints to external offices. The final referral decision remains with the Barangay Officer.
 
 ---
 
 ## System Architecture
 
-![eSumbong System Architecture](docs/architecture/System_Architecture_Diagram.png)
+![eSumbong System Architecture](docs/architecture/eSumbong-System-Architecture.png)
 
-The system uses a React frontend, an Express.js REST API backend, and Supabase services for authentication, file storage, and PostgreSQL database management.
+The system uses a layered web architecture consisting of:
 
-```
-┌────────────────────┐       REST/JSON (Bearer token)       ┌────────────────────┐
-│  React + Vite SPA  │ ───────────────────────────────────▶ │  Express.js API    │
-│  (Tailwind, Leaflet)│ ◀─────────────────────────────────── │  (Zod validation)  │
-└─────────┬──────────┘                                      └─────────┬──────────┘
-          │ Supabase Auth (sign-up/sign-in/session)                    │ Service-role key
-          ▼                                                            ▼
-┌───────────────────────────────────────────────────────────────────────────────┐
-│  Supabase  (Auth · PostgreSQL · Storage)                                      │
-└───────────────────────────────────────────────────────────────────────────────┘
-```
+- **React.js** frontend
+- **Express.js** REST API backend
+- **Supabase Auth** for authentication
+- **Supabase PostgreSQL** for database management
+- **Supabase Storage** for file storage
+
+The frontend communicates with the Express.js backend through REST API endpoints, while the backend interacts with Supabase services for authentication, database operations, and file storage.
 
 ---
 
 ## Database / ERD
 
-![eSumbong Database ERD](docs/erd/eSumbong-ERD.png)
+![eSumbong ERD](docs/erd/eSumbong-ERD.png)
 
-The database includes the following core entities:
+The database contains the following core entities:
 
-- `users`
-- `complaints`
-- `categories`
-- `referral_targets`
-- `action_log_entries`
-- `notifications`
+| Entity               | Description                                                                   |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `users`              | Stores application-level user information for Residents and Barangay Officers |
+| `complaints`         | Stores the central complaint records                                          |
+| `categories`         | Defines complaint categories and their default referral targets               |
+| `referral_targets`   | Stores appropriate offices or entities that may receive referrals             |
+| `action_log_entries` | Records complaint status changes, actions, and contact logs                   |
+| `notifications`      | Stores notifications for residents regarding complaint updates                |
 
-Supabase Auth manages authentication users separately through `auth.users`. A database trigger (`on_auth_user_created`) mirrors each `auth.users` row into the public `users` profile table.
-
-Full DDL and seed data: [`server/sql/schema.sql`](server/sql/schema.sql)
+Authentication is handled separately through **Supabase Auth**, which manages authentication users through `auth.users`.
 
 ---
 
 ## User Flow
 
-![eSumbong User Flow](docs/user-flow/eSumbong-UserFlow.png)
+![eSumbong User Flow](docs/user-flow/eSumbong-User-Flow.png)
 
-The user flow covers both Resident and Barangay Officer processes.
+The user flow covers the major processes of both Residents and Barangay Officers.
+
+### Resident Flow
+
+```text
+Landing Page
+    ↓
+Register / Login
+    ↓
+Resident Dashboard
+    ↓
+Submit Complaint
+    ↓
+Track Complaint
+    ↓
+Receive Status Updates
+```
+
+Residents may also submit a complaint without registering through the guest submission process.
+
+### Barangay Officer Flow
+
+```text
+Officer Login
+    ↓
+Officer Dashboard
+    ↓
+Review Complaint
+    ↓
+Validate / Reject
+    ↓
+Categorize Complaint
+    ↓
+Review Referral Suggestion
+    ↓
+Accept / Override Referral
+    ↓
+Record Actions
+    ↓
+Resolve Complaint
+    ↓
+Close Complaint
+```
 
 ---
 
 ## Sitemap
 
-![eSumbong Sitemap](docs/sitemap/eSumbong-Site-Map.png)
+![eSumbong Sitemap](docs/sitemap/eSumbong-Sitemap.png)
 
-### Routes
+The sitemap defines the main navigation structure of the application.
 
-| Route                      | Role     | Page                                           |
-| -------------------------- | -------- | ---------------------------------------------- |
-| `/`                        | Public   | Landing / portal chooser                       |
-| `/login`                   | Public   | Login (resident & officer)                     |
-| `/register`                | Public   | Resident registration                          |
-| `/resident`                | Resident | Resident dashboard                             |
-| `/resident/submit`         | Resident | Submit complaint                               |
-| `/resident/complaints`     | Resident | My complaints                                  |
-| `/resident/complaints/:id` | Resident | Complaint details                              |
-| `/resident/notifications`  | Resident | Notifications                                  |
-| `/officer`                 | Officer  | Officer dashboard                              |
-| `/officer/queue`           | Officer  | Complaint queue                                |
-| `/officer/action-log`      | Officer  | Action log                                     |
-| `/officer/complaints/:id`  | Officer  | Complaint details (review/refer/resolve/close) |
-| `/officer/settings`        | Officer  | Settings                                       |
+### Public Pages
+
+- Landing Page
+- Login
+- Register
+- Track Complaint
+- Guest Complaint Submission
+
+### Resident Portal
+
+- Resident Dashboard
+- Submit Complaint
+- My Complaints
+- Complaint Details
+- Notifications
+- Profile
+
+### Officer Portal
+
+- Officer Login
+- Officer Dashboard
+- Complaint Queue
+- Complaint Details
+- Complaint Review
+- Referral Management
+- Action Logs
+- Resolution Management
 
 ---
 
@@ -162,7 +260,6 @@ The user flow covers both Resident and Barangay Officer processes.
 - Tailwind CSS
 - React Router
 - Axios
-- Supabase JS (client auth + session)
 
 ### Backend
 
@@ -170,7 +267,6 @@ The user flow covers both Resident and Barangay Officer processes.
 - Express.js
 - REST API
 - Zod
-- Supabase JS (service role)
 
 ### Backend Services
 
@@ -178,10 +274,17 @@ The user flow covers both Resident and Barangay Officer processes.
 - Supabase PostgreSQL
 - Supabase Storage
 
-### Location
+### Location Services
 
 - Leaflet
-- OpenStreetMap (tiles + Nominatim reverse geocoding)
+- OpenStreetMap
+- Browser Geolocation API
+
+### Testing
+
+- Jest
+- Supertest
+- React Testing Library
 
 ### Version Control
 
@@ -190,126 +293,171 @@ The user flow covers both Resident and Barangay Officer processes.
 
 ---
 
-## Project Structure
+## Project Status
 
-```text
-eSumbong/
-├── client/                     # React + Vite frontend
-│   ├── src/
-│   │   ├── components/         # Shared UI (sidebar, modals, map, badges…)
-│   │   ├── context/            # AuthContext
-│   │   ├── lib/                # supabase client + axios api
-│   │   └── pages/
-│   │       ├── resident/
-│   │       └── officer/
-│   └── package.json
-├── server/                     # Express + Zod backend
-│   ├── src/
-│   │   ├── middleware/
-│   │   ├── routes/
-│   │   ├── schemas/
-│   │   └── utils/
-│   ├── sql/schema.sql          # DDL + triggers + seed data
-│   └── package.json
-└── docs/                       # architecture, ERD, user-flow, sitemap images
-```
+**Current Phase: Phase 2 — Define**
+
+Current Phase 2 deliverables include:
+
+- [x] Product Requirements Document
+- [x] System Architecture Diagram
+- [x] Database / ERD Diagram
+- [x] User Flow
+- [x] Sitemap
+- [x] GitHub Repository
+- [x] Project Board
+
+---
+
+## Development Approach
+
+The project follows an **Agile Scrum** development approach.
+
+Development activities include:
+
+1. Requirements analysis
+2. Product and feature definition
+3. UI/UX design
+4. System architecture and database design
+5. Frontend development
+6. Backend API development
+7. Database integration
+8. Testing
+9. Evaluation and refinement
+
+The system is developed iteratively, allowing requirements and implementation details to be refined throughout the development process.
 
 ---
 
 ## Getting Started
 
-### 1. Supabase setup
+### Prerequisites
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. In **SQL Editor**, run the entire [`server/sql/schema.sql`](server/sql/schema.sql). This creates tables, enums, indexes, triggers, and seed data (categories + referral targets).
-3. In **Storage**, create two **public** buckets:
-   - `complaint-photos`
-   - `resolution-photos`
-4. Copy the project **URL**, **anon key**, and **service role key** from **Settings → API**.
+Make sure the following are installed:
 
-### 2. Backend
+- [Node.js](https://nodejs.org/) v18 or higher
+- npm or yarn
+- A [Supabase](https://supabase.com/) account
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/bitguybandit/eSumbong.git
+cd eSumbong
+```
+
+### 2. Set Up the Backend
+
+Navigate to the server directory:
 
 ```bash
 cd server
-cp .env.example .env        # fill in Supabase values
 npm install
-npm run dev                 # starts on http://localhost:4000
 ```
 
-### 3. Frontend
+Copy the environment configuration file:
+
+```bash
+cp .env.example .env
+```
+
+Configure the required Supabase credentials inside `.env`.
+
+### 3. Set Up the Database
+
+Open the **Supabase SQL Editor** and run the SQL schema files located in:
+
+```text
+server/sql/
+```
+
+At minimum, run the database schema required by the project before starting the application.
+
+### 4. Set Up the Frontend
+
+From the project root, navigate to the client directory:
+
+```bash
+cd ../client
+npm install
+```
+
+Copy the environment configuration file:
+
+```bash
+cp .env.example .env
+```
+
+Configure the required environment variables.
+
+### 5. Run the Development Servers
+
+Start the backend:
+
+```bash
+cd server
+npm run dev
+```
+
+In a second terminal, start the frontend:
 
 ```bash
 cd client
-cp .env.example .env        # fill in Supabase URL + anon key, API URL
-npm install
-npm run dev                 # starts on http://localhost:5173
+npm run dev
 ```
 
-### 4. Create an officer account
+The frontend will normally be available at:
 
-Register a resident account through the UI (or any auth user), then promote it:
-
-```sql
-update public.users u
-set role_type = 'officer'
-from auth.users a
-where u.id = a.id and a.email = 'officer@example.com';
-```
-
-> Or insert an auth user via Supabase dashboard and update `role_type`. The profile row is auto-created by the `on_auth_user_created` trigger.
-
----
-
-## Environment Variables
-
-### `server/.env`
-
-```env
-PORT=4000
-SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
-CLIENT_URL=http://localhost:5173
-```
-
-### `client/.env`
-
-```env
-VITE_SUPABASE_URL=https://xxxx.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJ...
-VITE_API_URL=http://localhost:4000/api
+```text
+http://localhost:5173
 ```
 
 ---
 
-## API Overview
+## Guest Access
 
-| Method | Endpoint                                 | Description                             |
-| ------ | ---------------------------------------- | --------------------------------------- |
-| GET    | `/api/auth/me`                           | Current user + profile                  |
-| GET    | `/api/categories`                        | Categories with default referral target |
-| GET    | `/api/referral-targets`                  | Referral targets                        |
-| POST   | `/api/uploads`                           | Upload photo to storage                 |
-| POST   | `/api/complaints`                        | Submit complaint (resident/anonymous)   |
-| GET    | `/api/complaints/mine`                   | Resident's complaints                   |
-| GET    | `/api/complaints/:id`                    | Complaint detail (role-aware)           |
-| GET    | `/api/notifications`                     | Current user's notifications            |
-| PATCH  | `/api/notifications/:id/read`            | Mark notification read                  |
-| GET    | `/api/officer/dashboard`                 | Officer dashboard stats                 |
-| GET    | `/api/officer/complaints`                | Complaint queue (`status=submitted`)    |
-| GET    | `/api/officer/action-log`                | Accepted/processing complaints          |
-| POST   | `/api/officer/complaints/:id/accept`     | Accept complaint                        |
-| POST   | `/api/officer/complaints/:id/reject`     | Reject complaint                        |
-| POST   | `/api/officer/complaints/:id/categorize` | Set category + referral                 |
-| POST   | `/api/officer/complaints/:id/actions`    | Log an action/contact                   |
-| POST   | `/api/officer/complaints/:id/resolve`    | Add resolution remarks/photo            |
-| POST   | `/api/officer/complaints/:id/close`      | Close complaint                         |
+Residents can submit complaints without creating an account through the **"Continue Without Registering"** option.
+
+Guest users can:
+
+- Submit a complaint
+- Provide complaint details
+- Attach supporting evidence
+- Provide a complaint location
+- Receive a Tracking ID
+- Track their complaint using the Tracking ID
+
+Anonymous complaints do not require a resident account.
 
 ---
 
-## Project
+## Officer Access
 
-**eSumbong**
-Western Institute of Technology
-Bachelor of Science in Information Technology
+Barangay Officer accounts are **pre-provisioned manually** through the Supabase Dashboard.
 
-Developed as an academic software project.
+There is no public officer registration.
+
+The officer login is available through the dedicated route:
+
+```text
+/officer/login
+```
+
+The officer login route is not linked from the public resident-facing navigation.
+
+---
+
+## Project Information
+
+**Project:** eSumbong  
+**Institution:** Western Institute of Technology  
+**Program:** Bachelor of Science in Information Technology  
+**Project Type:** Academic Software Project
+
+eSumbong is developed as an academic software project focused on improving the reporting and resolution workflow of community complaints at the barangay level.
+
+---
+
+## License
+
+This project is developed for academic purposes as part of the Bachelor of Science in Information Technology program at Western Institute of Technology.
