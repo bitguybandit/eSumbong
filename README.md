@@ -131,7 +131,7 @@ The system does **not** automatically route complaints to external offices. The 
 
 ## System Architecture
 
-![eSumbong System Architecture](docs/architecture/eSumbong_System_Architecture.png)
+![eSumbong System Architecture](docs/eSumbong_System_Architecture.png)
 
 The system uses a layered web architecture consisting of:
 
@@ -147,7 +147,7 @@ The frontend communicates with the Express.js backend through REST API endpoints
 
 ## Database / ERD
 
-![eSumbong ERD](docs/erd/eSumbong-ERD.png)
+![eSumbong ERD](docs/eSumbong-ERD.png)
 
 The database contains the following core entities:
 
@@ -166,7 +166,7 @@ Authentication is handled separately through **Supabase Auth**, which manages au
 
 ## User Flow
 
-![eSumbong User Flow](docs/user-flow/eSumbong-UserFlow.png)
+![eSumbong User Flow](docs/eSumbong-UserFlow.png)
 
 The user flow covers the major processes of both Residents and Barangay Officers.
 
@@ -216,7 +216,7 @@ Close Complaint
 
 ## Sitemap
 
-![eSumbong Sitemap](docs/sitemap/eSumbong-Sitemap.png)
+![eSumbong Sitemap](docs/eSumbong-Site-Map.png)
 
 The sitemap defines the main navigation structure of the application.
 
