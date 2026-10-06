@@ -27,3 +27,54 @@ Developed as a Bachelor of Science in Information Technology software project at
 - [Project Information](#project-information)
 
 ---
+
+## Project Scope
+
+The current pilot MVP consists of two primary user roles:
+
+### Resident
+
+Residents can submit community complaints, provide relevant details and evidence, and track the progress of their complaints.
+
+### Barangay Officer
+
+Barangay Officers can review, validate, categorize, refer, process, resolve, and close submitted complaints.
+
+The current MVP does *not* include:
+
+- Administrator accounts
+- Municipal Officer accounts
+- Department Officer accounts
+- Automatic complaint routing
+- Automatic referral to external offices
+
+---
+
+## Core Features
+
+### Resident
+
+- Account registration and login
+- Complaint submission
+- Complaint description and categorization
+- Photo attachment
+- Complaint location selection using a map
+- Anonymous reporting
+- Guest complaint submission without an account
+- Complaint tracking using a Tracking ID
+- Status notifications
+
+### Barangay Officer
+
+- Complaint queue
+- Complaint review and validation
+- Complaint rejection with reason
+- Complaint categorization
+- Referral suggestion review
+- Referral acceptance or override
+- Action and contact logging
+- Resolution remarks
+- Resolution photo attachment
+- Complaint closure
+
+---
