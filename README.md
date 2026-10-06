@@ -76,5 +76,3 @@ The current MVP does *not* include:
 - Resolution remarks
 - Resolution photo attachment
 - Complaint closure
-
----
