@@ -8,6 +8,40 @@ Developed as a Bachelor of Science in Information Technology software project at
 
 ---
 
+
+## Complaint Workflow
+
+The standard complaint lifecycle follows this process:
+
+text
+SUBMITTED
+    ↓
+UNDER REVIEW
+    ↓
+REFERRED
+    ↓
+RESOLVED
+    ↓
+CLOSED
+
+Invalid complaints may follow:
+
+text
+UNDER REVIEW
+    ↓
+REJECTED
+
+### Workflow Description
+
+1. *Submitted* — A resident submits a complaint through the system.
+2. *Under Review* — A Barangay Officer reviews and validates the complaint.
+3. *Referred* — The complaint is referred to an appropriate target when necessary.
+4. *Resolved* — The complaint has been addressed and resolution details are recorded.
+5. *Closed* — The complaint process is completed and the case is formally closed.
+6. *Rejected* — A complaint may be rejected when it is determined to be invalid or inappropriate, with a reason recorded by the officer.
+
+
+
 ## Table of Contents
 
 - [Project Scope](#project-scope)
