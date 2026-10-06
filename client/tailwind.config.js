@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -20,15 +21,31 @@ export default {
           800: '#16233a',
           900: '#0f1b2d',
         },
-        ink: {
-          DEFAULT: '#1a2332',
-          500: '#4a5568',
-          400: '#8a94a6',
+        crimson: {
+          50: '#fdf2f4',
+          500: '#a31a31',
+          600: '#8b1528',
+          700: '#6f1020',
         },
-        canvas: '#f4f6f8',
+        // ── Theme-driven tokens ────────────────────────────────────────
+        // Light values live on :root, dark values on `.dark`. Both are set in
+        // index.css, so a single `.dark` wrapper re-skins the officer portal
+        // without touching any markup. Alpha modifiers work because the vars
+        // hold bare `R G B` triplets.
+        ink: {
+          DEFAULT: 'rgb(var(--c-ink) / <alpha-value>)',
+          500: 'rgb(var(--c-ink-500) / <alpha-value>)',
+          400: 'rgb(var(--c-ink-400) / <alpha-value>)',
+        },
+        canvas: 'rgb(var(--c-canvas) / <alpha-value>)',
         hairline: {
-          DEFAULT: '#e8ecf0',
-          strong: '#d5dbe3',
+          DEFAULT: 'rgb(var(--c-hairline) / <alpha-value>)',
+          strong: 'rgb(var(--c-hairline-strong) / <alpha-value>)',
+        },
+        surface: {
+          DEFAULT: 'rgb(var(--c-surface) / <alpha-value>)',
+          soft: 'rgb(var(--c-surface-soft) / <alpha-value>)',
+          hover: 'rgb(var(--c-surface-hover) / <alpha-value>)',
         },
       },
       fontFamily: {
