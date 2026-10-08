@@ -80,10 +80,10 @@ const IconPhone = ({ className }) => (
 
 const EMERGENCY_HOTLINES = [
   { department: '24/7 Hotline', numbers: ['0920 511 5666'] },
-  { department: 'MDRRMO', numbers: ['(033) 335 0920'] },
-  { department: 'Oton PNP', numbers: ['(033) 336 6926', '0998 598 6220'] },
-  { department: 'Oton BFP', numbers: ['0968 727 4239'] },
-  { department: 'Municipal Health Office', numbers: ['(033) 338 3761'] },
+  { department: 'MDRRMO', numbers: ['(033) 335 0920'], color: 'text-orange-600' },
+  { department: 'Oton PNP', numbers: ['(033) 336 6926', '0998 598 6220'], color: 'text-blue-600' },
+  { department: 'Oton BFP', numbers: ['0968 727 4239'], color: 'text-red-600' },
+  { department: 'Municipal Health Office', numbers: ['(033) 338 3761'], color: 'text-green-600' },
 ];
 
 const NAV_ITEMS = [
@@ -173,9 +173,9 @@ export default function ResidentSidebar() {
           <ul className="mt-2 space-y-2">
             {EMERGENCY_HOTLINES.map((line) => (
               <li key={line.department}>
-                <div className="text-xs text-slate-500">{line.department}</div>
+                <div className={`text-xs ${line.color ?? 'text-slate-500'}`}>{line.department}</div>
                 {line.numbers.map((number) => (
-                  <div key={number} className="text-sm font-bold text-red-600">
+                  <div key={number} className="text-sm font-bold text-slate-900">
                     {number}
                   </div>
                 ))}
