@@ -78,6 +78,14 @@ const IconPhone = ({ className }) => (
   </Glyph>
 );
 
+const EMERGENCY_HOTLINES = [
+  { department: '24/7 Hotline', numbers: ['0920 511 5666'] },
+  { department: 'MDRRMO', numbers: ['(033) 335 0920'] },
+  { department: 'Oton PNP', numbers: ['(033) 336 6926', '0998 598 6220'] },
+  { department: 'Oton BFP', numbers: ['0968 727 4239'] },
+  { department: 'Municipal Health Office', numbers: ['(033) 338 3761'] },
+];
+
 const NAV_ITEMS = [
   { to: '/resident', label: 'Home', icon: IconHome, end: true },
   { to: '/resident/report', label: 'Report', icon: IconReport },
@@ -162,8 +170,18 @@ export default function ResidentSidebar() {
             <IconPhone className="h-4 w-4 shrink-0" />
             <span className="text-[11px] font-bold uppercase tracking-wide">Emergency Assistance</span>
           </div>
-          <div className="mt-2 text-xs text-slate-500">Tandoc Hotline:</div>
-          <div className="text-sm font-semibold text-slate-900">(033) 337-0812</div>
+          <ul className="mt-2 space-y-2">
+            {EMERGENCY_HOTLINES.map((line) => (
+              <li key={line.department}>
+                <div className="text-xs text-slate-500">{line.department}</div>
+                {line.numbers.map((number) => (
+                  <div key={number} className="text-sm font-semibold text-slate-900">
+                    {number}
+                  </div>
+                ))}
+              </li>
+            ))}
+          </ul>
         </div>
       </nav>
 
