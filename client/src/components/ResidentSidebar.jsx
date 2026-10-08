@@ -123,10 +123,10 @@ export default function ResidentSidebar() {
               to={item.to}
               end={item.end}
               className={({ isActive }) =>
-                `relative flex items-center gap-3 rounded-lg border px-3 py-2 text-sm transition ${
+                `relative flex items-center gap-3 rounded-lg border px-3 py-2 text-base font-bold transition ${
                   isActive
-                    ? 'border-blue-200 bg-blue-50 font-semibold text-blue-700'
-                    : 'border-transparent font-medium text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-800'
+                    ? 'border-blue-200 bg-blue-50 text-blue-700'
+                    : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-800'
                 }`
               }
             >
@@ -157,7 +157,7 @@ export default function ResidentSidebar() {
         </div>
 
         {/* Emergency assistance */}
-        <div className="mt-6 rounded-xl border border-slate-200 p-3">
+        <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-3">
           <div className="flex items-center gap-2 text-red-600">
             <IconPhone className="h-4 w-4 shrink-0" />
             <span className="text-[11px] font-bold uppercase tracking-wide">Emergency Assistance</span>
