@@ -133,7 +133,7 @@ function NavItem({ item }) {
     return (
       <span
         title={`${item.label} — coming soon`}
-        className="flex cursor-not-allowed items-center gap-3 rounded-full py-2.5 pl-3.5 pr-3.5 text-[13px] font-medium text-ink-400 dark:text-white/30"
+        className="flex cursor-not-allowed items-center gap-3 rounded-full py-2.5 pl-3.5 pr-3.5 text-[15px] font-bold text-ink-400 dark:text-white/30"
       >
         {content}
       </span>
@@ -145,10 +145,10 @@ function NavItem({ item }) {
       to={item.to}
       end={item.end}
       className={({ isActive }) =>
-        `relative flex items-center gap-3 py-2.5 text-[13px] transition ${
+        `relative flex items-center gap-3 py-2.5 text-[15px] font-bold transition ${
           isActive
-            ? '-mr-3 rounded-l-full rounded-r-none bg-blue-600 pl-3.5 pr-4 font-semibold text-white shadow-[0_4px_12px_rgba(37,99,235,0.45)]'
-            : 'rounded-full pl-3.5 pr-3.5 font-medium text-ink-500 hover:bg-surface-hover hover:text-ink dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
+            ? '-mr-3 rounded-l-full rounded-r-none bg-blue-600 pl-3.5 pr-4 text-white shadow-[0_4px_12px_rgba(37,99,235,0.45)]'
+            : 'rounded-full pl-3.5 pr-3.5 text-ink-500 hover:bg-surface-hover hover:text-ink dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
         }`
       }
     >
