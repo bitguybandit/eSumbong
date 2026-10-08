@@ -175,7 +175,7 @@ export default function ResidentSidebar() {
               <li key={line.department}>
                 <div className="text-xs text-slate-500">{line.department}</div>
                 {line.numbers.map((number) => (
-                  <div key={number} className="text-sm font-semibold text-slate-900">
+                  <div key={number} className="text-sm font-bold text-red-600">
                     {number}
                   </div>
                 ))}
