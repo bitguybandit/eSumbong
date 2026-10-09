@@ -133,7 +133,7 @@ function NavItem({ item }) {
     return (
       <span
         title={`${item.label} — coming soon`}
-        className="flex cursor-not-allowed items-center gap-3 rounded-full py-2.5 pl-3.5 pr-3.5 text-[15px] font-bold text-ink-400 dark:text-white/30"
+        className="flex cursor-not-allowed items-center gap-3 rounded-full py-2.5 pl-3.5 pr-3.5 text-sm font-medium text-ink-400 dark:text-white/30"
       >
         {content}
       </span>
@@ -145,10 +145,10 @@ function NavItem({ item }) {
       to={item.to}
       end={item.end}
       className={({ isActive }) =>
-        `relative flex items-center gap-3 py-2.5 text-[15px] font-bold transition ${
+        `relative flex items-center gap-3 py-2.5 text-sm transition ${
           isActive
-            ? '-mr-3 rounded-l-full rounded-r-none bg-blue-600 pl-3.5 pr-4 text-white shadow-[0_4px_12px_rgba(37,99,235,0.45)]'
-            : 'rounded-full pl-3.5 pr-3.5 text-ink-500 hover:bg-surface-hover hover:text-ink dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
+            ? '-mr-3 rounded-l-full rounded-r-none bg-blue-600 pl-3.5 pr-4 font-semibold text-white shadow-[0_4px_12px_rgba(37,99,235,0.45)]'
+            : 'rounded-full pl-3.5 pr-3.5 font-medium text-ink-500 hover:bg-surface-hover hover:text-ink dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
         }`
       }
     >
@@ -192,7 +192,7 @@ export default function OfficerSidebar({ onNavigate }) {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-3 py-4">
-        <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[1.2px] text-ink-400 dark:text-white/40">
+        <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-ink-400 dark:text-white/40">
           Main Menu
         </p>
         <div className="space-y-0.5">
@@ -201,7 +201,7 @@ export default function OfficerSidebar({ onNavigate }) {
           ))}
         </div>
 
-        <p className="px-3 pb-2 pt-6 text-[10px] font-semibold uppercase tracking-[1.2px] text-ink-400 dark:text-white/40">
+        <p className="px-3 pb-2 pt-6 text-[11px] font-bold uppercase tracking-wider text-ink-400 dark:text-white/40">
           Analytics &amp; Reports
         </p>
         <div className="space-y-0.5">
@@ -210,7 +210,7 @@ export default function OfficerSidebar({ onNavigate }) {
           ))}
         </div>
 
-        <p className="px-3 pb-2 pt-6 text-[10px] font-semibold uppercase tracking-[1.2px] text-ink-400 dark:text-white/40">
+        <p className="px-3 pb-2 pt-6 text-[11px] font-bold uppercase tracking-wider text-ink-400 dark:text-white/40">
           System
         </p>
         <div className="space-y-0.5">
@@ -226,8 +226,8 @@ export default function OfficerSidebar({ onNavigate }) {
           {initials(profile?.full_name)}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[13px] font-semibold text-ink dark:text-white">{profile?.full_name}</div>
-          <div className="text-[11px] text-ink-400 dark:text-white/45">Barangay Officer</div>
+          <div className="truncate text-sm font-semibold text-ink dark:text-white">{profile?.full_name}</div>
+          <div className="text-xs text-ink-400 dark:text-white/45">Barangay Officer</div>
         </div>
         <button
           onClick={handleSignOut}
