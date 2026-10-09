@@ -143,3 +143,31 @@ REJECTED
 
 ---
 
+## Referral Mechanism
+
+eSumbong uses a **rule-based referral suggestion mechanism**.
+
+Each complaint category may have a default referral target. When a Barangay Officer reviews a complaint, the system provides the corresponding suggested referral target.
+
+The Barangay Officer can:
+
+- **Accept** the suggested referral target
+- **Override** the suggestion with another appropriate referral target
+
+The system does **not** automatically route complaints to external offices. The final referral decision remains with the Barangay Officer.
+
+---
+
+## System Architecture
+
+![eSumbong System Architecture](docs/System_Architecture_Diagram.png)
+
+The system uses a layered web architecture consisting of:
+
+- **React.js** frontend
+- **Express.js** REST API backend
+- **Supabase Auth** for authentication
+- **Supabase PostgreSQL** for database management
+- **Supabase Storage** for file storage
+
+
