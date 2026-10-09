@@ -170,4 +170,32 @@ The system uses a layered web architecture consisting of:
 - **Supabase PostgreSQL** for database management
 - **Supabase Storage** for file storage
 
+The frontend communicates with the Express.js backend through REST API endpoints, while the backend interacts with Supabase services for authentication, database operations, and file storage.
+
+---
+
+## Database / ERD
+
+![eSumbong ERD](docs/eSumbong-ERD.png)
+
+The database contains the following core entities:
+
+| Entity               | Description                                                                   |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `users`              | Stores application-level user information for Residents and Barangay Officers |
+| `complaints`         | Stores the central complaint records                                          |
+| `categories`         | Defines complaint categories and their default referral targets               |
+| `referral_targets`   | Stores appropriate offices or entities that may receive referrals             |
+| `action_log_entries` | Records complaint status changes, actions, and contact logs                   |
+| `notifications`      | Stores notifications for residents regarding complaint updates                |
+
+Authentication is handled separately through **Supabase Auth**, which manages authentication users through `auth.users`.
+
+---
+
+## User Flow
+
+![eSumbong User Flow](docs/eSumbong-UserFlow.png)
+
+The user flow covers the major processes of both Residents and Barangay Officers.
 
