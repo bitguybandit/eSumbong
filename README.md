@@ -267,3 +267,121 @@ Close Complaint
 ```
 
 ---
+    ↓
+Close Complaint
+```
+
+---
+
+## Sitemap
+
+![eSumbong Sitemap](docs/eSumbong-Site-Map.png)
+
+The sitemap defines the main navigation structure of the application.
+
+### Public Pages
+
+- Landing Page
+- Login
+- Register
+- Track Complaint
+- Guest Complaint Submission
+
+### Resident Portal
+
+- Resident Dashboard
+- Submit Complaint
+- My Complaints
+- Complaint Details
+- Notifications
+- Profile
+
+### Officer Portal
+
+- Officer Login
+- Officer Dashboard
+- Complaint Queue
+- Complaint Details
+- Complaint Review
+- Referral Management
+- Action Logs
+- Resolution Management
+
+---
+
+## Technology Stack
+
+### Frontend
+
+- React.js
+- Vite
+- JavaScript
+- Tailwind CSS
+- React Router
+- Axios
+
+### Backend
+
+- Node.js
+- Express.js
+- REST API
+- Zod
+
+### Backend Services
+
+- Supabase Auth
+- Supabase PostgreSQL
+- Supabase Storage
+
+### Location Services
+
+- Leaflet
+- OpenStreetMap
+- Browser Geolocation API
+
+### Testing
+
+- Jest
+- Supertest
+- React Testing Library
+
+### Version Control
+
+- Git
+- GitHub
+
+---
+
+## Project Status
+
+**Current Phase: Phase 2 — Define**
+
+Current Phase 2 deliverables include:
+
+- [x] Product Requirements Document
+- [x] System Architecture Diagram
+- [x] Database / ERD Diagram
+- [x] User Flow
+- [x] Sitemap
+- [x] GitHub Repository
+- [x] Project Board
+
+---
+
+## Development Approach
+
+The project follows an **Agile Scrum** development approach.
+
+Development activities include:
+
+1. Requirements analysis
+2. Product and feature definition
+3. UI/UX design
+4. System architecture and database design
+5. Frontend development
+6. Backend API development
+7. Database integration
+8. Testing
+9. Evaluation and refinement
+
+The system is developed iteratively, allowing requirements and implementation details to be refined throughout the development process.
