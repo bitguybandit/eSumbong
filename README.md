@@ -199,3 +199,71 @@ Authentication is handled separately through **Supabase Auth**, which manages au
 
 The user flow covers the major processes of both Residents and Barangay Officers.
 
+## Database / ERD
+
+![eSumbong ERD](docs/eSumbong-ERD.png)
+
+The database contains the following core entities:
+
+| Entity               | Description                                                                   |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `users`              | Stores application-level user information for Residents and Barangay Officers |
+| `complaints`         | Stores the central complaint records                                          |
+| `categories`         | Defines complaint categories and their default referral targets               |
+| `referral_targets`   | Stores appropriate offices or entities that may receive referrals             |
+| `action_log_entries` | Records complaint status changes, actions, and contact logs                   |
+| `notifications`      | Stores notifications for residents regarding complaint updates                |
+
+Authentication is handled separately through **Supabase Auth**, which manages authentication users through `auth.users`.
+
+---
+
+## User Flow
+
+![eSumbong User Flow](docs/eSumbong-UserFlow.png)
+
+The user flow covers the major processes of both Residents and Barangay Officers.
+
+### Resident Flow
+
+```text
+Landing Page
+    ↓
+Register / Login
+    ↓
+Resident Dashboard
+    ↓
+Submit Complaint
+    ↓
+Track Complaint
+    ↓
+Receive Status Updates
+```
+
+Residents may also submit a complaint without registering through the guest submission process.
+
+### Barangay Officer Flow
+
+```text
+Officer Login
+    ↓
+Officer Dashboard
+    ↓
+Review Complaint
+    ↓
+Validate / Reject
+    ↓
+Categorize Complaint
+    ↓
+Review Referral Suggestion
+    ↓
+Accept / Override Referral
+    ↓
+Record Actions
+    ↓
+Resolve Complaint
+    ↓
+Close Complaint
+```
+
+---
