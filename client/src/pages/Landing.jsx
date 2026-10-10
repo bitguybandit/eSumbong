@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Logo from '../components/Logo';
 import StatusBadge from '../components/StatusBadge';
@@ -121,6 +121,8 @@ const FEATURES = [
   },
 ];
 
+const LIFECYCLE_STEPS = ['Submitted', 'Under Review', 'Referred', 'Resolved', 'Closed'];
+
 // --- Icons ---
 function IconShield({ className = 'h-4 w-4' }) {
   return (
@@ -211,6 +213,7 @@ export default function Landing() {
   const stepRefs = useRevealAll(PROCESS_STEPS.length);
   const featuresHeaderRef = useReveal();
   const featureRefs = useRevealAll(FEATURES.length);
+  const lifecycleRef = useReveal();
 
   async function runTrack(id) {
     setTrackBusy(true);
@@ -465,6 +468,63 @@ export default function Landing() {
                 <p className="text-sm leading-relaxed text-slate-500">{f.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Complaint Lifecycle */}
+      <section id="lifecycle" className="px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div
+            ref={lifecycleRef}
+            className="reveal relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 to-blue-900 p-8 sm:p-12"
+          >
+            {/* Decorative grid pattern overlay */}
+            <div
+              className="pointer-events-none absolute inset-0 opacity-20"
+              style={{
+                backgroundImage:
+                  'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
+                backgroundSize: '40px 40px',
+              }}
+            />
+
+            <div className="relative z-10">
+              {/* Section label */}
+              <span className="inline-block rounded-md bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-white/80 backdrop-blur">
+                Complaint Lifecycle
+              </span>
+
+              {/* Title */}
+              <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                From Submission to Closure
+              </h2>
+
+              {/* Description */}
+              <p className="mt-3 max-w-2xl text-base text-white/70">
+                Every complaint goes through a transparent, verifiable lifecycle.
+              </p>
+
+              {/* Flow row */}
+              <div className="mt-10 flex flex-col gap-3 md:flex-row md:items-center">
+                {LIFECYCLE_STEPS.map((name, i) => (
+                  <Fragment key={name}>
+                    <div className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-5 text-center backdrop-blur transition hover:-translate-y-1 hover:bg-white/10">
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">
+                        STEP {String(i + 1).padStart(2, '0')}
+                      </div>
+                      <div className="mt-1 text-sm font-bold text-white">{name}</div>
+                    </div>
+                    {i < LIFECYCLE_STEPS.length - 1 && (
+                      <>
+                        <div className="hidden text-2xl text-white/30 md:block">→</div>
+                        <div className="block text-2xl text-white/30 md:hidden">↓</div>
+                      </>
+                    )}
+                  </Fragment>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
