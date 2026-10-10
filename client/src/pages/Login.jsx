@@ -76,6 +76,27 @@ function IconCheck({ className = 'h-4 w-4' }) {
   );
 }
 
+// Supabase answers a wrong password and an unknown email with the same
+// "Invalid login credentials" text, but it uses dedicated codes for
+// unconfirmed or banned accounts — showing those verbatim would let anyone
+// probe which emails are registered. Every credential/account-state failure
+// is collapsed onto one message; rate limiting is left alone because it says
+// nothing about the account.
+const UNIFORM_LOGIN_ERROR = 'Invalid email or password.';
+const CREDENTIAL_ERROR_CODES = new Set([
+  'invalid_credentials',
+  'email_not_confirmed',
+  'phone_not_confirmed',
+  'user_not_found',
+  'user_banned',
+]);
+
+function loginErrorMessage(err) {
+  if (CREDENTIAL_ERROR_CODES.has(err?.code)) return UNIFORM_LOGIN_ERROR;
+  if (/invalid login credentials/i.test(err?.message || '')) return UNIFORM_LOGIN_ERROR;
+  return err?.message || 'Unable to sign in. Please try again.';
+}
+
 export default function Login() {
   const { signIn, signOut } = useAuth();
   const navigate = useNavigate();
@@ -105,7 +126,7 @@ export default function Login() {
         setError('This account has no valid application role. Contact the Barangay Secretary.');
       }
     } catch (err) {
-      setError(err.message);
+      setError(loginErrorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -230,6 +251,10 @@ export default function Login() {
                 {passwordField}
                 {submitButton}
               </form>
+
+              <p className="mt-3 text-center text-xs text-slate-400">
+                For your security, we do not disclose whether an email is registered.
+              </p>
 
               <div className="my-5 flex items-center gap-3">
                 <span className="h-px flex-1 bg-slate-200" />
