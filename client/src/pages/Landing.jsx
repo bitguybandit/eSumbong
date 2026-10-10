@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Logo from '../components/Logo';
 import StatusBadge from '../components/StatusBadge';
@@ -207,6 +207,18 @@ export default function Landing() {
   const metricsHeaderRef = useReveal();
   const metricRefs = useRevealAll(METRICS.length);
   const trackRef = useReveal();
+  const ctaRef = useReveal();
+  const trackSectionRef = useRef(null);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const scrollToTrack = () => {
+    if (trackSectionRef.current) {
+      trackSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   async function runTrack(id) {
     setTrackBusy(true);
@@ -555,7 +567,7 @@ export default function Landing() {
       </section>
 
       {/* Track */}
-      <section id="track" className="scroll-mt-16 px-6 py-24">
+      <section id="track" ref={trackSectionRef} className="scroll-mt-16 px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <div
             ref={trackRef}
@@ -682,6 +694,58 @@ export default function Landing() {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div
+            ref={ctaRef}
+            className="reveal relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 to-blue-900 px-6 py-16 text-center sm:px-16"
+          >
+            {/* Decorative animated blobs */}
+            <div className="pointer-events-none absolute -right-32 -top-32 h-[500px] w-[500px] rounded-full bg-teal-500/20 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -left-20 h-[400px] w-[400px] rounded-full bg-blue-500/20 blur-3xl" />
+
+            <div className="relative z-10">
+              <h2 className="mx-auto max-w-3xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl">
+                Be part of making our barangay cleaner, safer, and more responsive.
+              </h2>
+
+              <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 sm:text-lg">
+                Your neighborhood reports help barangay officials prioritize streetlights, drainage
+                declogging, and safety patrols where our residents need them most.
+              </p>
+
+              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={scrollToTop}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-slate-900 shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-100"
+                >
+                  File a Complaint Now
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={scrollToTrack}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-transparent px-6 py-3.5 text-sm font-bold text-white transition hover:border-white hover:bg-white/10"
+                >
+                  Track Existing Complaint
+                </button>
+              </div>
             </div>
           </div>
         </div>
