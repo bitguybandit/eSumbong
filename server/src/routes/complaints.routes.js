@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { supabase } from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -8,6 +9,22 @@ import { getComplaintDetail } from '../utils/complaintDetail.js';
 import { submitComplaintSchema } from '../schemas/index.js';
 
 const router = Router();
+
+// Daily per-IP cap on complaint submissions that arrive without an account.
+// Requests carrying a valid token are skipped (see `skip` below), so residents
+// who are signed in are never counted against this guest allowance.
+const guestSubmitLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
+  max: 3, // 3 guest complaints per IP per day
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => Boolean(req.authUser),
+  message: {
+    error:
+      'You have reached the daily limit for guest submissions. Please register ' +
+      'an account or try again tomorrow.',
+  },
+});
 
 /** Attaches req.authUser / req.user when a valid token is present, else continues. */
 async function optionalAuth(req, _res, next) {
@@ -32,6 +49,7 @@ async function optionalAuth(req, _res, next) {
 router.post(
   '/',
   optionalAuth,
+  guestSubmitLimiter,
   asyncHandler(async (req, res) => {
     const body = parse(submitComplaintSchema, req.body);
 
