@@ -368,3 +368,193 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ---------- Landing page section treatments ---------- */
+
+@keyframes landing-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, -30px) scale(1.08);
+  }
+}
+
+/* Hero — soft blue gradient with floating radial blobs and a masked grid */
+.landing-hero {
+  background: linear-gradient(180deg, #f8fafc 0%, #eef3ff 60%, #ffffff 100%);
+}
+
+.landing-hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.landing-hero-bg::before,
+.landing-hero-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+}
+
+.landing-hero-bg::before {
+  width: 700px;
+  height: 700px;
+  top: -250px;
+  right: -200px;
+  background: radial-gradient(circle, rgba(30, 64, 175, 0.12), transparent 65%);
+  animation: landing-float 22s ease-in-out infinite;
+}
+
+.landing-hero-bg::after {
+  width: 500px;
+  height: 500px;
+  bottom: -200px;
+  left: -150px;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.1), transparent 65%);
+  animation: landing-float 26s ease-in-out infinite -10s;
+}
+
+.landing-hero-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(30, 64, 175, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 64, 175, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 75%);
+}
+
+/* How it works — white with a dotted radial pattern */
+.landing-how::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(30, 64, 175, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 40%, transparent 80%);
+  mask-image: radial-gradient(ellipse at 50% 50%, #000 40%, transparent 80%);
+}
+
+/* Features — slate-50 with a teal glow in the top-right corner */
+.landing-features {
+  background: #f8fafc;
+}
+
+.landing-features::after {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  top: -200px;
+  right: -200px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.06), transparent 60%);
+}
+
+/* Lifecycle — deep navy gradient card with a grid overlay and teal glow */
+.landing-lifecycle-card {
+  background: linear-gradient(135deg, #0a1535 0%, #16276b 55%, #0d3b8a 100%);
+  box-shadow: 0 32px 72px -24px rgba(10, 21, 53, 0.5);
+}
+
+.landing-lifecycle-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 30%, transparent 80%);
+  mask-image: radial-gradient(ellipse at 50% 50%, #000 30%, transparent 80%);
+}
+
+.landing-lifecycle-card::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  bottom: -180px;
+  right: -100px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.25), transparent 60%);
+}
+
+/* Metrics — white with a top accent line on each card */
+.landing-metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 40px;
+  height: 3px;
+  transform: translateX(-50%);
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(90deg, #1e40af, #0d9488);
+}
+
+/* Track — light slate-50 with a teal glow from the top edge */
+.landing-track {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(13, 148, 136, 0.08), transparent 60%),
+    #f8fafc;
+}
+
+/* CTA — deep navy gradient card, distinct from the track section */
+.landing-cta-card {
+  background: linear-gradient(135deg, #0a1535 0%, #122a6e 50%, #0d3b8a 100%);
+  box-shadow: 0 32px 72px -24px rgba(10, 21, 53, 0.45);
+}
+
+.landing-cta-card::before,
+.landing-cta-card::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.landing-cta-card::before {
+  width: 500px;
+  height: 500px;
+  top: -250px;
+  right: -150px;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.3), transparent 60%);
+  animation: landing-float 20s ease-in-out infinite;
+}
+
+.landing-cta-card::after {
+  width: 400px;
+  height: 400px;
+  bottom: -200px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(59, 107, 255, 0.25), transparent 60%);
+  animation: landing-float 24s ease-in-out infinite -8s;
+}
+
+.landing-cta-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 40%, transparent 80%);
+  mask-image: radial-gradient(ellipse at 50% 50%, #000 40%, transparent 80%);
+}
+
+/* Footer — rich navy */
+.landing-footer {
+  background: #0a1535;
+}
