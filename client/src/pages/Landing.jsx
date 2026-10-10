@@ -310,10 +310,10 @@ export default function Landing() {
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute -left-20 -top-24 h-96 w-96 rounded-full bg-blue-100 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 top-1/2 h-80 w-80 rounded-full bg-teal-100 blur-3xl" />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:px-8 lg:grid-cols-12 lg:py-24">
+      <section className="landing-hero relative overflow-hidden px-6 pb-24 pt-36">
+        <div className="landing-hero-bg" />
+        <div className="landing-hero-grid" />
+        <div className="relative mx-auto grid max-w-[1180px] items-center gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <div className="flex flex-wrap gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800">
@@ -400,16 +400,16 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section id="how" className="px-6 py-24">
-        <div className="mx-auto max-w-6xl">
+      <section id="how" className="landing-how relative px-6 py-28">
+        <div className="relative z-10 mx-auto max-w-[1180px]">
           <div ref={headerRef} className="reveal mb-16 text-center">
-            <span className="inline-block rounded-md bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF4FF] px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#1E40AF]">
               Civic Process
             </span>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+            <h2 className="mt-4 text-[clamp(1.9rem,3.6vw,2.75rem)] font-extrabold leading-tight tracking-tight text-slate-900">
               How eSumbong Works
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 sm:text-lg">
+            <p className="mx-auto mt-4 max-w-[620px] text-[1.05rem] text-slate-500">
               A transparent and direct path from community observation to official barangay action.
             </p>
           </div>
@@ -443,16 +443,16 @@ export default function Landing() {
       </section>
 
       {/* Features that Matter */}
-      <section id="features" className="bg-white px-6 py-24">
-        <div className="mx-auto max-w-6xl">
+      <section id="features" className="landing-features relative overflow-hidden px-6 py-28">
+        <div className="relative z-10 mx-auto max-w-[1180px]">
           <div ref={featuresHeaderRef} className="reveal mb-16 text-center">
-            <span className="inline-block rounded-md bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF4FF] px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#1E40AF]">
               Built for the Community
             </span>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+            <h2 className="mt-4 text-[clamp(1.9rem,3.6vw,2.75rem)] font-extrabold leading-tight tracking-tight text-slate-900">
               Features that Matter
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 sm:text-lg">
+            <p className="mx-auto mt-4 max-w-[620px] text-[1.05rem] text-slate-500">
               Designed with residents and barangay officers in mind — fast, private, and accountable.
             </p>
           </div>
@@ -478,25 +478,15 @@ export default function Landing() {
       </section>
 
       {/* Complaint Lifecycle */}
-      <section id="lifecycle" className="px-6 py-24">
-        <div className="mx-auto max-w-6xl">
+      <section id="lifecycle" className="px-6 py-28">
+        <div className="mx-auto max-w-[1180px]">
           <div
             ref={lifecycleRef}
-            className="reveal relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 to-blue-900 p-8 sm:p-12"
+            className="landing-lifecycle-card reveal relative overflow-hidden rounded-[28px] p-10 sm:px-12 sm:py-14"
           >
-            {/* Decorative grid pattern overlay */}
-            <div
-              className="pointer-events-none absolute inset-0 opacity-20"
-              style={{
-                backgroundImage:
-                  'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
-                backgroundSize: '40px 40px',
-              }}
-            />
-
             <div className="relative z-10">
               {/* Section label */}
-              <span className="inline-block rounded-md bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-white/80 backdrop-blur">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-widest text-white/90 ring-1 ring-inset ring-white/15 backdrop-blur">
                 Complaint Lifecycle
               </span>
 
@@ -535,26 +525,26 @@ export default function Landing() {
       </section>
 
       {/* Pilot Targets */}
-      <section className="bg-white px-6 py-24">
-        <div className="mx-auto max-w-6xl">
+      <section className="px-6 py-28">
+        <div className="mx-auto max-w-[1180px]">
           <div ref={metricsHeaderRef} className="reveal mb-16 text-center">
-            <span className="inline-block rounded-md bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F0FDFA] px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#0D9488]">
               Pilot Targets
             </span>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+            <h2 className="mt-4 text-[clamp(1.9rem,3.6vw,2.75rem)] font-extrabold leading-tight tracking-tight text-slate-900">
               Built to Deliver
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 sm:text-lg">
+            <p className="mx-auto mt-4 max-w-[620px] text-[1.05rem] text-slate-500">
               Our pilot metrics — measured, transparent, and verified.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-3">
             {METRICS.map((m, i) => (
               <div
                 key={m.label}
                 ref={metricRefs[i]}
-                className="reveal group rounded-2xl border border-slate-200 bg-white p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                className="landing-metric-card reveal group relative overflow-hidden rounded-[18px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-6 py-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="bg-gradient-to-br from-blue-700 to-teal-600 bg-clip-text text-5xl font-extrabold leading-none tracking-tight text-transparent">
                   {m.value}
