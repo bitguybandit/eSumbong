@@ -160,22 +160,6 @@ function IconArrow({ className = 'h-4 w-4' }) {
     </svg>
   );
 }
-function IconLock({ className = 'h-4 w-4' }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-      <rect x="4" y="10" width="16" height="11" rx="2" />
-      <path strokeLinecap="round" d="M8 10V7a4 4 0 0 1 8 0v3" />
-    </svg>
-  );
-}
-function IconPin({ className = 'h-5 w-5' }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
-      <circle cx="12" cy="10" r="2.5" />
-    </svg>
-  );
-}
 function IconSearch({ className = 'h-4 w-4' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -222,6 +206,7 @@ export default function Landing() {
   const lifecycleRef = useReveal();
   const metricsHeaderRef = useReveal();
   const metricRefs = useRevealAll(METRICS.length);
+  const trackRef = useReveal();
 
   async function runTrack(id) {
     setTrackBusy(true);
@@ -570,49 +555,67 @@ export default function Landing() {
       </section>
 
       {/* Track */}
-      <section id="track" className="scroll-mt-16 bg-blue-50 py-16">
-        <div className="mx-auto max-w-3xl px-4 text-center md:px-8">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-800">
-            <IconSearch className="h-5 w-5" />
-          </div>
-          <h2 className="text-3xl font-bold text-slate-900">Track your complaint</h2>
-          <p className="mx-auto mt-2 max-w-xl text-slate-600">
-            Check real-time updates and actions from the Barangay Officer using your issued ticket code.
-          </p>
-          <form onSubmit={handleTrack} className="mx-auto mt-8 flex max-w-lg flex-col gap-3 sm:flex-row">
-            <div className="relative flex-1">
-              <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                <IconPin />
-              </span>
-              <input
-                className="w-full rounded-lg border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                placeholder="Enter your Tracking ID (e.g. ES-2026-XXXX)"
-                value={trackingId}
-                onChange={(e) => setTrackingId(e.target.value)}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={trackBusy}
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-blue-800 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-900 disabled:opacity-60"
-            >
-              <IconSearch />
-              {trackBusy ? 'Checking…' : 'Track Status'}
-            </button>
-          </form>
-          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-slate-500">
-            <IconLock className="h-3.5 w-3.5" />
-            Codes are generated automatically when a submission is finalized.
-          </div>
+      <section id="track" className="scroll-mt-16 px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div
+            ref={trackRef}
+            className="reveal relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 to-blue-900 px-6 py-16 text-center sm:px-16"
+          >
+            {/* Decorative animated blobs */}
+            <div className="pointer-events-none absolute -right-32 -top-32 h-[500px] w-[500px] rounded-full bg-teal-500/20 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -left-20 h-[400px] w-[400px] rounded-full bg-blue-500/20 blur-3xl" />
 
-          {trackError && (
-            <p className="mx-auto mt-6 max-w-lg rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {trackError}
-            </p>
-          )}
+            {/* Content wrapper with relative z-index to sit above blobs */}
+            <div className="relative z-10">
+              {/* Icon circle at the top */}
+              <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur">
+                <IconSearch className="h-6 w-6 text-white" />
+              </div>
 
-          {trackResult && (
-            <div className="mx-auto mt-8 max-w-lg text-left">
+              {/* Title */}
+              <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl">
+                Track your complaint
+              </h2>
+
+              {/* Description */}
+              <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 sm:text-lg">
+                Check real-time updates and actions from the Barangay Officer using your issued ticket code.
+              </p>
+
+              {/* Search form */}
+              <form onSubmit={handleTrack} className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row">
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={trackingId}
+                    onChange={(e) => setTrackingId(e.target.value)}
+                    placeholder="Enter your Tracking ID (e.g. ES-2026-XXXX)"
+                    className="w-full rounded-xl border-0 bg-white px-5 py-3.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={trackBusy}
+                  className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-blue-700 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-600 disabled:opacity-60"
+                >
+                  <IconSearch className="h-4 w-4" />
+                  {trackBusy ? 'Checking…' : 'Track Status'}
+                </button>
+              </form>
+
+              {/* Helper text */}
+              <p className="mt-4 text-xs text-white/50">
+                🔒 Codes are generated automatically when a submission is finalized.
+              </p>
+
+              {trackError && (
+                <p className="mx-auto mt-6 max-w-2xl rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                  {trackError}
+                </p>
+              )}
+
+              {trackResult && (
+                <div className="mx-auto mt-10 max-w-2xl space-y-4 text-left">
               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -676,9 +679,11 @@ export default function Landing() {
                 ) : (
                   <p className="text-sm text-slate-400">No status updates yet.</p>
                 )}
-              </div>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </section>
 
