@@ -129,6 +129,41 @@ const METRICS = [
   { value: 'RA 10173', label: 'Data Privacy Compliant' },
 ];
 
+const FAQS = [
+  {
+    q: 'Do I need an account to submit a complaint?',
+    a: 'No. You can submit a complaint as a guest by clicking "Continue Without Registering" on the landing page. You will receive a unique Tracking ID to check the status of your report at any time.',
+  },
+  {
+    q: 'Can I report anonymously?',
+    a: 'Yes. If you are logged in, you can toggle "Submit Anonymously" on the complaint form. Your identity will not be visible to the Barangay Officer. If you are a guest, you are already anonymous by default.',
+  },
+  {
+    q: 'How do I track my complaint?',
+    a: 'After submitting, you will receive a Tracking ID in the format ES-2026-XXXX. Enter it in the "Track your complaint" section on the landing page to see real-time updates, the officer\'s actions, and the resolution status.',
+  },
+  {
+    q: 'What happens after I submit a complaint?',
+    a: 'Your complaint goes through a transparent lifecycle: Submitted → Under Review → Referred → Resolved → Closed. A Barangay Officer reviews it, validates the details, refers it to the appropriate office, and logs every action taken. You will see each step on your tracking page.',
+  },
+  {
+    q: 'Who reviews my complaint?',
+    a: 'A designated Barangay Officer — a single unified role responsible for reviewing, validating, categorizing, referring, and resolving complaints. There are no middlemen or departmental hand-offs.',
+  },
+  {
+    q: 'Is my personal information safe?',
+    a: 'Yes. eSumbong is compliant with the Data Privacy Act of 2012 (RA 10173). Your contact details are visible only to the designated Barangay Officer. Anonymous complaints do not store any identifying information.',
+  },
+  {
+    q: 'What types of complaints can I submit?',
+    a: 'You can report Broken Streetlights, Clogged Drainage, Illegal Dumping / Garbage, Noise Complaints, Potholes / Road Damage, Stray Animals, and other community concerns. For emergencies, please call the Barangay Hotline directly at (033) 337-0812.',
+  },
+  {
+    q: 'Can I submit a complaint on my phone?',
+    a: 'Yes. eSumbong is fully responsive and works on mobile phones, tablets, and desktop computers. You can submit a complaint, attach a photo, and pin your location from any device.',
+  },
+];
+
 // --- Icons ---
 
 function IconLock({ className = 'h-4 w-4' }) {
@@ -217,6 +252,7 @@ export default function Landing() {
   const [trackError, setTrackError] = useState('');
   const [trackResult, setTrackResult] = useState(null);
   const [categoryMap, setCategoryMap] = useState({});
+  const [openFaq, setOpenFaq] = useState(null);
   const headerRef = useReveal();
   const stepRefs = useRevealAll(PROCESS_STEPS.length);
   const featuresHeaderRef = useReveal();
@@ -224,6 +260,8 @@ export default function Landing() {
   const lifecycleRef = useReveal();
   const metricsHeaderRef = useReveal();
   const metricRefs = useRevealAll(METRICS.length);
+  const faqHeaderRef = useReveal();
+  const faqListRef = useReveal();
   const trackRef = useReveal();
   const infoCardsRef = useReveal();
   const ctaRef = useReveal();
@@ -764,6 +802,67 @@ export default function Landing() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="scroll-mt-16 bg-white px-6 py-24">
+        <div className="mx-auto max-w-3xl">
+          <div ref={faqHeaderRef} className="reveal mb-14 text-center">
+            <span className="inline-block rounded-md bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+              Common Questions
+            </span>
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+              Frequently Asked Questions
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-base text-slate-500">
+              Everything you need to know about reporting and tracking complaints with eSumbong.
+            </p>
+          </div>
+
+          <div ref={faqListRef} className="reveal space-y-3">
+            {FAQS.map((faq, i) => (
+              <div
+                key={i}
+                className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:border-blue-200"
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  aria-expanded={openFaq === i}
+                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                >
+                  <span className="text-sm font-semibold text-slate-900 sm:text-base">{faq.q}</span>
+                  <span
+                    className={`shrink-0 text-slate-400 transition-transform duration-300 ${
+                      openFaq === i ? 'rotate-180' : ''
+                    }`}
+                  >
+                    <svg
+                      className="h-5 w-5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </span>
+                </button>
+                <div
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    openFaq === i ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <p className="px-5 pb-4 text-sm leading-relaxed text-slate-500">{faq.a}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
