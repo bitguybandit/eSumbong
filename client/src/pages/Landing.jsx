@@ -303,17 +303,48 @@ export default function Landing() {
             <Logo size="sm" />
           </Link>
 
-          <nav className="hidden items-center gap-1 md:flex">
-            <Link to="/" className="rounded-lg bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-800">
+          <nav className="hidden items-center gap-0.5 md:flex">
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className="whitespace-nowrap rounded-lg bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800 lg:px-3.5"
+            >
               Home
-            </Link>
-            <Link to="/login" className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900">
+            </button>
+            <a
+              href="#how"
+              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+            >
+              How it works
+            </a>
+            <a
+              href="#features"
+              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+            >
+              Features
+            </a>
+            <a
+              href="#faq"
+              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+            >
+              FAQ
+            </a>
+            <Link
+              to="/login"
+              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+            >
               Submit
             </Link>
-            <a href="#track" className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900">
+            <a
+              href="#track"
+              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+            >
               Track
             </a>
-            <Link to="/login" className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900">
+            <Link
+              to="/login"
+              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+            >
               Login
             </Link>
           </nav>
@@ -419,7 +450,7 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section id="how" className="landing-how relative px-6 py-28">
+      <section id="how" className="landing-how relative scroll-mt-16 px-6 py-28">
         <div className="relative z-10 mx-auto max-w-[1180px]">
           <div ref={headerRef} className="reveal mb-16 text-center">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF4FF] px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#1E40AF]">
@@ -462,7 +493,7 @@ export default function Landing() {
       </section>
 
       {/* Features that Matter */}
-      <section id="features" className="landing-features relative overflow-hidden px-6 py-28">
+      <section id="features" className="landing-features relative scroll-mt-16 overflow-hidden px-6 py-28">
         <div className="relative z-10 mx-auto max-w-[1180px]">
           <div ref={featuresHeaderRef} className="reveal mb-16 text-center">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF4FF] px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#1E40AF]">
