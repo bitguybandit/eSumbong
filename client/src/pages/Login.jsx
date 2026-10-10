@@ -221,10 +221,6 @@ export default function Login() {
               <div className="text-xs text-slate-500">Republic of the Philippines • City Local Government</div>
             </div>
           </div>
-          <span className="hidden items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm sm:flex">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-teal-500" />
-            Official Resident Desk Active
-          </span>
         </div>
 
         {/* ===== Resident layout ===== */}
@@ -237,7 +233,6 @@ export default function Login() {
                   <IconLock className="h-3.5 w-3.5" />
                   Citizen Authentication Portal
                 </span>
-                <span className="text-xs text-slate-400">Form SEC-2024-SI</span>
               </div>
 
               <h1 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Welcome back</h1>
@@ -307,7 +302,7 @@ export default function Login() {
           </div>
 
           {/* Right: trust panel */}
-          <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-blue-50 to-teal-50 p-8 lg:p-10 md:flex">
+          <div className="relative flex flex-col justify-between bg-gradient-to-br from-blue-50 to-teal-50 p-8 lg:p-10">
             <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-200/50 blur-2xl" />
             <div className="pointer-events-none absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-teal-200/50 blur-xl" />
 
@@ -364,15 +359,29 @@ export default function Login() {
                     </p>
                   </div>
                 </div>
+                              <div className="flex items-start gap-3 rounded-xl bg-white p-3 shadow-sm">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-700 text-white">
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6M9 12h.01M15 12h.01" />
+                  </svg>
+                </span>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-teal-700">
+                    Community Notice
+                  </p>
+                  <h3 className="mt-0.5 text-[13px] font-semibold text-slate-900">
+                    Barangay Hall Open: Mon – Fri, 8AM – 5PM
+                  </h3>
+                  <p className="text-xs leading-snug text-slate-600">
+                    San Jose Hotline: (+63) 920 835 6781
+                  </p>
+                </div>
+              </div>
               </div>
             </div>
 
             <div className="relative z-10 mt-4 flex items-center justify-between border-t border-blue-100 pt-3 text-xs text-slate-500">
               <span>Barangay San Jose Community Project</span>
-              <span className="flex items-center gap-1 font-semibold text-slate-900">
-                <IconCheck className="h-3.5 w-3.5 text-teal-600" />
-                Civic Verified
-              </span>
             </div>
           </div>
         </div>
