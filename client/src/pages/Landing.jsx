@@ -4,6 +4,7 @@ import Logo from '../components/Logo';
 import StatusBadge from '../components/StatusBadge';
 import api from '../lib/api';
 import { ENTRY_TYPE_META, formatDateTime } from '../lib/constants';
+import useReveal, { useRevealAll } from '../hooks/useReveal';
 
 const TRACK_ENTRY_META = {
   status_change: { label: 'Status Updated', icon: '🔄' },
@@ -15,26 +16,39 @@ const PROCESS_STEPS = [
   {
     n: '01',
     title: 'Submit',
-    desc: 'File a report with photo and location. Choose whether to submit openly or anonymously.',
-    tag: 'Add photos & landmark',
-    tagColor: 'text-blue-700',
-    icon: '📷',
+    desc: 'File a report with a photo and location. Choose whether to submit openly or anonymously.',
+    icon: (
+      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7.5 18.5 3 20l1.5-4.5 12-12Z"
+        />
+        <path strokeLinecap="round" strokeLinejoin="round" d="m14.5 5.5 4 4" />
+      </svg>
+    ),
   },
   {
     n: '02',
     title: 'Track',
-    desc: "Monitor your complaint's progress with a private ticket ID given upon submission.",
-    tag: 'Live progress checkpoints',
-    tagColor: 'text-teal-600',
-    icon: '🔄',
+    desc: "Monitor your complaint's progress with a private tracking ID given upon submission.",
+    icon: (
+      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <circle cx="11" cy="11" r="7" />
+        <path strokeLinecap="round" d="m21 21-4.35-4.35" />
+      </svg>
+    ),
   },
   {
     n: '03',
     title: 'Resolution',
     desc: 'See the action taken by the barangay with recorded notes and resolution proof.',
-    tag: 'Official closure documentation',
-    tagColor: 'text-blue-700',
-    icon: '✅',
+    icon: (
+      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3 5 6v5c0 5 3 8 7 10 4-2 7-5 7-10V6l-7-3Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="m9 12 2 2 4-4" />
+      </svg>
+    ),
   },
 ];
 
@@ -124,6 +138,8 @@ export default function Landing() {
   const [trackError, setTrackError] = useState('');
   const [trackResult, setTrackResult] = useState(null);
   const [categoryMap, setCategoryMap] = useState({});
+  const headerRef = useReveal();
+  const stepRefs = useRevealAll(PROCESS_STEPS.length);
 
   async function runTrack(id) {
     setTrackBusy(true);
@@ -305,28 +321,45 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section className="mx-auto max-w-6xl px-4 py-16 md:px-8">
-        <div className="mx-auto mb-12 max-w-2xl text-center">
-          <span className="text-xs font-bold uppercase tracking-wider text-teal-600">Civic Process</span>
-          <h2 className="mt-1 text-3xl font-bold text-slate-900">How eSumbong Works</h2>
-          <p className="mt-2 text-slate-600">
-            A transparent and direct path from community observation to official barangay action.
-          </p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {PROCESS_STEPS.map((s) => (
-            <div key={s.n} className="flex flex-col rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-100 transition hover:shadow-md">
-              <div className="mb-4 flex items-center justify-between">
-                <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-2xl">{s.icon}</span>
-                <span className="text-2xl font-extrabold text-blue-100">{s.n}</span>
+      <section id="how" className="px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div ref={headerRef} className="reveal mb-16 text-center">
+            <span className="inline-block rounded-md bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+              Civic Process
+            </span>
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+              How eSumbong Works
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 sm:text-lg">
+              A transparent and direct path from community observation to official barangay action.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {PROCESS_STEPS.map((s, i) => (
+              <div
+                key={s.n}
+                ref={stepRefs[i]}
+                style={{ transitionDelay: `${i * 100}ms` }}
+                className="reveal group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 transition-all duration-300 hover:-translate-y-2 hover:border-transparent hover:shadow-2xl"
+              >
+                {/* Top gradient accent bar that expands on hover */}
+                <div className="absolute left-0 right-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-blue-700 to-teal-600 transition-transform duration-500 group-hover:scale-x-100" />
+
+                {/* Step number watermark */}
+                <div className="absolute right-6 top-6 text-5xl font-extrabold leading-none text-slate-100 transition-colors duration-300 group-hover:text-blue-100">
+                  {s.n}
+                </div>
+
+                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-teal-50 text-blue-700 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6">
+                  {s.icon}
+                </div>
+
+                <h3 className="mb-2 text-lg font-bold text-slate-900">{s.title}</h3>
+                <p className="text-sm leading-relaxed text-slate-500">{s.desc}</p>
               </div>
-              <h3 className="text-lg font-bold text-slate-900">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{s.desc}</p>
-              <div className={`mt-4 flex items-center gap-2 border-t border-slate-100 pt-4 text-xs font-semibold ${s.tagColor}`}>
-                {s.tag}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
