@@ -52,6 +52,75 @@ const PROCESS_STEPS = [
   },
 ];
 
+const FEATURES = [
+  {
+    title: 'Pinpoint Location',
+    desc: 'Tag your report on an interactive map so the officer knows exactly where the issue is.',
+    iconClass: 'bg-blue-50 text-blue-700',
+    icon: (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
+        <circle cx="12" cy="10" r="2.5" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Anonymous Reporting',
+    desc: 'Submit sensitive complaints without revealing your identity to the officer.',
+    iconClass: 'bg-teal-50 text-teal-700',
+    icon: (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <rect x="4" y="10" width="16" height="11" rx="2" />
+        <path strokeLinecap="round" d="M8 10V7a4 4 0 0 1 8 0v3" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Status Notifications',
+    desc: 'Receive real-time alerts when your complaint status changes — no need to keep checking.',
+    iconClass: 'bg-amber-50 text-amber-700',
+    icon: (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 9a6 6 0 1 1 12 0c0 4 2 5 2 5H4s2-1 2-5Z" />
+        <path strokeLinecap="round" d="M10 20a2 2 0 0 0 4 0" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Full Audit Trail',
+    desc: 'Every action taken on your complaint is timestamped and logged for full accountability.',
+    iconClass: 'bg-teal-50 text-teal-700',
+    icon: (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14 3v5h5" />
+        <path strokeLinecap="round" d="M9 13h6M9 17h4" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Direct Officer Review',
+    desc: 'Complaints go straight to the designated Barangay Officer — no bureaucratic hand-offs.',
+    iconClass: 'bg-blue-50 text-blue-700',
+    icon: (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20 15a2 2 0 0 1-2 2H8l-4 3V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10Z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Privacy Protected',
+    desc: 'Compliant with the Data Privacy Act of 2012 (RA 10173). Your data stays safe.',
+    iconClass: 'bg-amber-50 text-amber-700',
+    icon: (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3 5 6v5c0 5 3 8 7 10 4-2 7-5 7-10V6l-7-3Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="m9 12 2 2 4-4" />
+      </svg>
+    ),
+  },
+];
+
 // --- Icons ---
 function IconShield({ className = 'h-4 w-4' }) {
   return (
@@ -140,6 +209,8 @@ export default function Landing() {
   const [categoryMap, setCategoryMap] = useState({});
   const headerRef = useReveal();
   const stepRefs = useRevealAll(PROCESS_STEPS.length);
+  const featuresHeaderRef = useReveal();
+  const featureRefs = useRevealAll(FEATURES.length);
 
   async function runTrack(id) {
     setTrackBusy(true);
@@ -357,6 +428,41 @@ export default function Landing() {
 
                 <h3 className="mb-2 text-lg font-bold text-slate-900">{s.title}</h3>
                 <p className="text-sm leading-relaxed text-slate-500">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features that Matter */}
+      <section id="features" className="bg-white px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div ref={featuresHeaderRef} className="reveal mb-16 text-center">
+            <span className="inline-block rounded-md bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+              Built for the Community
+            </span>
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+              Features that Matter
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 sm:text-lg">
+              Designed with residents and barangay officers in mind — fast, private, and accountable.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((f, i) => (
+              <div
+                key={f.title}
+                ref={featureRefs[i]}
+                className="reveal group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl"
+              >
+                <div
+                  className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${f.iconClass}`}
+                >
+                  {f.icon}
+                </div>
+                <h3 className="mb-2 text-base font-bold text-slate-900">{f.title}</h3>
+                <p className="text-sm leading-relaxed text-slate-500">{f.desc}</p>
               </div>
             ))}
           </div>
