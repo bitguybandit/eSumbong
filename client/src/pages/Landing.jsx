@@ -123,6 +123,12 @@ const FEATURES = [
 
 const LIFECYCLE_STEPS = ['Submitted', 'Under Review', 'Referred', 'Resolved', 'Closed'];
 
+const METRICS = [
+  { value: '48h', label: 'First Response Target' },
+  { value: '100%', label: 'Audit Trail Coverage' },
+  { value: 'RA 10173', label: 'Data Privacy Compliant' },
+];
+
 // --- Icons ---
 function IconShield({ className = 'h-4 w-4' }) {
   return (
@@ -214,6 +220,8 @@ export default function Landing() {
   const featuresHeaderRef = useReveal();
   const featureRefs = useRevealAll(FEATURES.length);
   const lifecycleRef = useReveal();
+  const metricsHeaderRef = useReveal();
+  const metricRefs = useRevealAll(METRICS.length);
 
   async function runTrack(id) {
     setTrackBusy(true);
@@ -525,6 +533,38 @@ export default function Landing() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pilot Targets */}
+      <section className="bg-white px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div ref={metricsHeaderRef} className="reveal mb-16 text-center">
+            <span className="inline-block rounded-md bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+              Pilot Targets
+            </span>
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+              Built to Deliver
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 sm:text-lg">
+              Our pilot metrics — measured, transparent, and verified.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {METRICS.map((m, i) => (
+              <div
+                key={m.label}
+                ref={metricRefs[i]}
+                className="reveal group rounded-2xl border border-slate-200 bg-white p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div className="bg-gradient-to-br from-blue-700 to-teal-600 bg-clip-text text-5xl font-extrabold leading-none tracking-tight text-transparent">
+                  {m.value}
+                </div>
+                <div className="mt-3 text-sm font-medium text-slate-500">{m.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
