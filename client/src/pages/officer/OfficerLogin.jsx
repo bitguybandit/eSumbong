@@ -337,10 +337,6 @@ export default function OfficerLogin() {
             </div>
           </div>
         </div>
-
-        <p className="mt-8 text-center text-xs text-slate-400">
-          Western Institute of Technology · BS in Information Technology · Academic software project
-        </p>
       </div>
     </div>
   );
