@@ -253,6 +253,7 @@ export default function Landing() {
   const [trackResult, setTrackResult] = useState(null);
   const [categoryMap, setCategoryMap] = useState({});
   const [openFaq, setOpenFaq] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerRef = useReveal();
   const stepRefs = useRevealAll(PROCESS_STEPS.length);
   const featuresHeaderRef = useReveal();
@@ -276,6 +277,14 @@ export default function Landing() {
       trackSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+
+  // Lock page scroll while the mobile drawer is open.
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   async function runTrack(id) {
     setTrackBusy(true);
@@ -341,61 +350,222 @@ export default function Landing() {
             <Logo size="sm" />
           </Link>
 
-          <nav className="hidden items-center gap-0.5 md:flex">
+          <nav className="flex items-center">
+            <div className="hidden items-center gap-0.5 md:flex">
+              <button
+                type="button"
+                onClick={scrollToTop}
+                className="whitespace-nowrap rounded-lg bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800 lg:px-3.5"
+              >
+                Home
+              </button>
+              <a
+                href="#how"
+                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+              >
+                How it works
+              </a>
+              <a
+                href="#features"
+                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+              >
+                Features
+              </a>
+              <a
+                href="#faq"
+                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+              >
+                FAQ
+              </a>
+              <Link
+                to="/login"
+                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+              >
+                Submit
+              </Link>
+              <a
+                href="#track"
+                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+              >
+                Track
+              </a>
+              <Link
+                to="/login"
+                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
+              >
+                Login
+              </Link>
+            </div>
+
             <button
               type="button"
-              onClick={scrollToTop}
-              className="whitespace-nowrap rounded-lg bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800 lg:px-3.5"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+              aria-expanded={mobileMenuOpen}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-700 transition hover:bg-slate-100 md:hidden"
             >
-              Home
+              <svg
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
             </button>
-            <a
-              href="#how"
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-            >
-              How it works
-            </a>
-            <a
-              href="#features"
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-            >
-              Features
-            </a>
-            <a
-              href="#faq"
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-            >
-              FAQ
-            </a>
-            <Link
-              to="/login"
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-            >
-              Submit
-            </Link>
-            <a
-              href="#track"
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-            >
-              Track
-            </a>
-            <Link
-              to="/login"
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-            >
-              Login
-            </Link>
           </nav>
 
           <Link
             to="/login"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-800 text-white hover:bg-blue-900"
+            className="hidden h-9 w-9 items-center justify-center rounded-full bg-blue-800 text-white hover:bg-blue-900 md:inline-flex"
             aria-label="Login"
           >
             <IconPerson />
           </Link>
         </div>
       </header>
+
+      {/* Mobile backdrop */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <aside
+        className={`fixed right-0 top-0 z-50 h-full w-72 bg-white shadow-2xl transition-transform duration-300 md:hidden ${
+          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        {/* Drawer header */}
+        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-700 to-blue-500 text-xs font-extrabold text-white">
+              eS
+            </div>
+            <span className="font-extrabold tracking-tight text-slate-900">eSumbong</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100"
+            aria-label="Close menu"
+          >
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Drawer links */}
+        <div className="flex flex-col gap-1 px-4 py-6">
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              scrollToTop();
+            }}
+            className="flex items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-blue-700"
+          >
+            Home
+            <svg
+              className="h-4 w-4 text-slate-300"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m9 6 6 6-6 6" />
+            </svg>
+          </button>
+          {[
+            { label: 'How it works', href: '#how' },
+            { label: 'Features', href: '#features' },
+            { label: 'FAQ', href: '#faq' },
+            { label: 'Track', href: '#track' },
+          ].map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-blue-700"
+            >
+              {link.label}
+              <svg
+                className="h-4 w-4 text-slate-300"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </a>
+          ))}
+          {[
+            { label: 'Submit', to: '/login' },
+            { label: 'Login', to: '/login' },
+          ].map((link) => (
+            <Link
+              key={link.label}
+              to={link.to}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-blue-700"
+            >
+              {link.label}
+              <svg
+                className="h-4 w-4 text-slate-300"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </Link>
+          ))}
+        </div>
+
+        {/* Drawer footer with Sign In CTA */}
+        <div className="absolute bottom-0 left-0 right-0 border-t border-slate-100 p-4">
+          <Link
+            to="/login"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-700 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-blue-600"
+          >
+            Sign In
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </Link>
+        </div>
+      </aside>
 
       {/* Hero */}
       <section className="landing-hero relative overflow-hidden px-6 pb-24 pt-36">
