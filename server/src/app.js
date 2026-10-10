@@ -12,18 +12,14 @@ import officerRoutes from './routes/officer.routes.js';
 
 const app = express();
 
-app.use(
-  cors({
-    origin: [
-      'http://localhost:5173',
-      // Production frontend on Vercel. Kept literal so the API keeps working
-      // even when CLIENT_URL is unset or stale in the hosting environment.
-      'https://esumbong-san-jose.vercel.app',
-      config.clientUrl,
-    ],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://esumbong-san-jose.vercel.app', // <-- Your new URL
+    'https://e-sumbong-hazel.vercel.app'   // <-- Keep the old one in case of redirects
+  ],
+  credentials: true,
+}));
 app.use(express.json({ limit: '2mb' }));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, service: 'eSumbong API' }));
