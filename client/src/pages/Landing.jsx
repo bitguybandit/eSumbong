@@ -164,6 +164,15 @@ const FAQS = [
   },
 ];
 
+// Sections tracked by the landing nav scroll-spy (ids must exist in the markup).
+const NAV_LINKS = [
+  { label: 'Home', id: 'home' },
+  { label: 'How it works', id: 'how' },
+  { label: 'Features', id: 'features' },
+  { label: 'Track', id: 'track' },
+  { label: 'FAQ', id: 'faq' },
+];
+
 // --- Icons ---
 
 function IconLock({ className = 'h-4 w-4' }) {
@@ -254,6 +263,7 @@ export default function Landing() {
   const [categoryMap, setCategoryMap] = useState({});
   const [openFaq, setOpenFaq] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const headerRef = useReveal();
   const stepRefs = useRevealAll(PROCESS_STEPS.length);
   const featuresHeaderRef = useReveal();
@@ -276,6 +286,11 @@ export default function Landing() {
     if (trackSectionRef.current) {
       trackSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const scrollToSection = (id) => {
+    setActiveSection(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   // Lock page scroll while the mobile drawer is open.
@@ -341,6 +356,48 @@ export default function Landing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
+  // Scroll-spy: highlights the nav link for the section currently filling most
+  // of the viewport. The observer stays subscribed so the highlight follows
+  // both scroll directions; shares are recomputed on each callback because
+  // these sections are taller than the viewport, so a single entry's
+  // intersectionRatio can never reach the 40% mark on its own.
+  useEffect(() => {
+    const sections = NAV_LINKS.map((link) => document.getElementById(link.id)).filter(Boolean);
+    if (!sections.length || typeof IntersectionObserver === 'undefined') return undefined;
+
+    const lastId = NAV_LINKS[NAV_LINKS.length - 1].id;
+
+    const syncActiveSection = () => {
+      // At the bottom of the page the CTA owns the viewport, so keep the last
+      // nav-linked section highlighted instead of leaving the nav unstyled.
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 50) {
+        setActiveSection(lastId);
+        return;
+      }
+
+      let best = null;
+      let bestShare = 0;
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+        const share = Math.max(0, visible) / window.innerHeight;
+        if (share >= 0.4 && share > bestShare) {
+          bestShare = share;
+          best = section.id;
+        }
+      });
+
+      if (best) setActiveSection(best);
+    };
+
+    const observer = new IntersectionObserver(syncActiveSection, {
+      threshold: [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+    });
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen scroll-smooth bg-white text-slate-900">
       {/* Header */}
@@ -352,43 +409,30 @@ export default function Landing() {
 
           <nav className="flex items-center">
             <div className="hidden items-center gap-0.5 md:flex">
-              <button
-                type="button"
-                onClick={scrollToTop}
-                className="whitespace-nowrap rounded-lg bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800 lg:px-3.5"
-              >
-                Home
-              </button>
-              <a
-                href="#how"
-                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-              >
-                How it works
-              </a>
-              <a
-                href="#features"
-                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-              >
-                Features
-              </a>
-              <a
-                href="#faq"
-                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-              >
-                FAQ
-              </a>
+              {NAV_LINKS.map((link) => (
+                <a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(link.id);
+                  }}
+                  aria-current={activeSection === link.id ? 'location' : undefined}
+                  className={
+                    activeSection === link.id
+                      ? 'whitespace-nowrap rounded-lg bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700 lg:px-3.5'
+                      : 'whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5'
+                  }
+                >
+                  {link.label}
+                </a>
+              ))}
               <Link
                 to="/login"
                 className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
               >
                 Submit
               </Link>
-              <a
-                href="#track"
-                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
-              >
-                Track
-              </a>
               <Link
                 to="/login"
                 className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-slate-900 lg:px-3.5"
@@ -568,7 +612,7 @@ export default function Landing() {
       </aside>
 
       {/* Hero */}
-      <section className="landing-hero relative overflow-hidden px-6 pb-24 pt-36">
+      <section id="home" className="landing-hero relative overflow-hidden px-6 pb-24 pt-36">
         <div className="landing-hero-bg" />
         <div className="landing-hero-grid" />
         <div className="relative mx-auto grid max-w-[1180px] items-center gap-10 lg:grid-cols-12">
@@ -1093,7 +1137,7 @@ export default function Landing() {
           <div>
             <div className="text-sm font-semibold text-white">eSumbong Civic Action Portal</div>
             <p className="mt-1 text-xs text-white/45">
-              Pilot project for Barangay San Isidro, Iloilo City. RA 10173 Data Privacy Act Compliant.
+              Pilot project for Barangay San Jose, Iloilo City. RA 10173 Data Privacy Act Compliant.
             </p>
           </div>
           <div className="flex items-center gap-6 text-[0.82rem] font-medium text-white/60">
