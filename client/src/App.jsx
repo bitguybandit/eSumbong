@@ -20,6 +20,7 @@ import EditProfile from './pages/resident/EditProfile';
 import ChangePassword from './pages/resident/ChangePassword';
 
 import OfficerDashboard from './pages/officer/OfficerDashboard';
+import OfficerLogin from './pages/officer/OfficerLogin';
 import ComplaintQueue from './pages/officer/ComplaintQueue';
 import ActionLog from './pages/officer/ActionLog';
 import OfficerComplaintDetails from './pages/officer/ComplaintDetails';
@@ -31,6 +32,9 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      {/* Officer entry point — intentionally unlinked from the public site and
+          shared directly with barangay staff. Must stay outside ProtectedRoute. */}
+      <Route path="/officer/login" element={<OfficerLogin />} />
       {/* Public guest submission — reachable without auth (see ?guest=true). */}
       <Route
         path="/submit-complaint"

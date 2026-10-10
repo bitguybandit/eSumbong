@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import api from '../lib/api';
-import Logo from '../components/Logo';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import api from '../../lib/api';
+import Logo from '../../components/Logo';
 
 // --- Icons ---
 function IconMail({ className = 'h-4 w-4' }) {
@@ -52,19 +52,20 @@ function IconShield({ className = 'h-4 w-4' }) {
     </svg>
   );
 }
-function IconPerson({ className = 'h-4 w-4' }) {
+function IconQueue({ className = 'h-4 w-4' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-      <circle cx="12" cy="8" r="4" />
-      <path strokeLinecap="round" d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h9" />
+      <circle cx="18" cy="18" r="2.5" />
     </svg>
   );
 }
-function IconClock({ className = 'h-4 w-4' }) {
+function IconLogs({ className = 'h-4 w-4' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-      <circle cx="12" cy="12" r="9" />
-      <path strokeLinecap="round" d="M12 7v5l3 2" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M14 3v5h5" />
+      <path strokeLinecap="round" d="M9 13h6M9 17h4" />
     </svg>
   );
 }
@@ -76,13 +77,12 @@ function IconCheck({ className = 'h-4 w-4' }) {
   );
 }
 
-export default function Login() {
+export default function OfficerLogin() {
   const { signIn, signOut } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -92,17 +92,17 @@ export default function Login() {
     setBusy(true);
     try {
       const { session } = await signIn(email.trim(), password);
+      // Confirm the account actually holds the barangay officer role before
+      // letting it into the operational dashboard.
       const res = await api.get('/auth/me', {
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
       const roleType = res.data?.profile?.role_type;
       if (roleType === 'officer') {
         navigate('/officer', { replace: true });
-      } else if (roleType === 'resident') {
-        navigate('/resident', { replace: true });
       } else {
         await signOut().catch(() => {});
-        setError('This account has no valid application role. Contact the Barangay Secretary.');
+        setError('Access denied. Please use the resident portal.');
       }
     } catch (err) {
       setError(err.message);
@@ -111,158 +111,139 @@ export default function Login() {
     }
   }
 
-  const emailField = (
-    <div>
-      <label className="label" htmlFor="email">
-        Email Address
-      </label>
-      <div className="relative">
-        <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-          <IconMail />
-        </span>
-        <input
-          id="email"
-          type="email"
-          required
-          autoComplete="email"
-          className="input pl-10"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-        />
-      </div>
-      <p className="mt-1 pl-1 text-xs text-slate-400">Registered email associated with your resident profile</p>
-    </div>
-  );
-
-  const passwordField = (
-    <div>
-      <div className="flex items-center justify-between">
-        <label className="label" htmlFor="password">
-          Password
-        </label>
-        <button type="button" className="text-xs font-semibold text-blue-700 hover:underline">
-          Forgot password?
-        </button>
-      </div>
-      <div className="relative">
-        <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-          <IconLock />
-        </span>
-        <input
-          id="password"
-          type={showPassword ? 'text' : 'password'}
-          required
-          autoComplete="current-password"
-          className="input pl-10 pr-11"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword((v) => !v)}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
-          aria-label={showPassword ? 'Hide password' : 'Show password'}
-        >
-          {showPassword ? <IconEyeOff /> : <IconEye />}
-        </button>
-      </div>
-    </div>
-  );
-
-  const errorBox = error && (
-    <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
-  );
-
-  const submitButton = (
-    <button
-      type="submit"
-      disabled={busy}
-      className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-800 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-900"
-    >
-      {busy ? 'Signing in…' : 'Sign In'}
-      {!busy && <IconArrow />}
-    </button>
-  );
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 text-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-teal-50 text-slate-900">
       <div className="mx-auto w-full max-w-6xl px-4 py-8">
         {/* Brand top bar */}
         <div className="mb-6 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <Logo size="md" />
             <div className="leading-tight">
-              <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-teal-700">
-                Barangay San Jose
+              <span className="rounded-full bg-blue-900 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                Official Use
               </span>
               <div className="text-xs text-slate-500">Republic of the Philippines • City Local Government</div>
             </div>
           </div>
           <span className="hidden items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm sm:flex">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-teal-500" />
-            Official Resident Desk Active
+            <span className="h-2 w-2 rounded-full bg-teal-500" />
+            Barangay San Jose • Officer Desk
           </span>
         </div>
 
-        {/* ===== Resident layout ===== */}
         <div className="grid overflow-hidden rounded-2xl bg-white shadow-xl lg:grid-cols-12">
           {/* Left: form */}
           <div className="flex flex-col justify-between p-6 sm:p-8 lg:col-span-7">
             <div>
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-800">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-100 px-2.5 py-1 text-xs font-semibold text-teal-700">
                   <IconLock className="h-3.5 w-3.5" />
-                  Citizen Authentication Portal
+                  🔒 Official Staff Access
                 </span>
-                <span className="text-xs text-slate-400">Form SEC-2024-SI</span>
+                <span className="text-xs text-slate-400">Form OPS-2024-SI</span>
               </div>
 
-              <h1 className="mt-6 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Welcome back</h1>
+              <h1 className="mt-6 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                Barangay Officer Portal
+              </h1>
               <p className="mt-1 text-sm leading-relaxed text-slate-500">
-                Sign in to access your submitted reports and check updates from the Barangay Officer.
+                Sign in to access the complaint queue and process citizen reports.
               </p>
 
-              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                {errorBox}
-                {emailField}
-                {passwordField}
-                {submitButton}
-              </form>
-
-              <div className="my-5 flex items-center gap-3">
-                <span className="h-px flex-1 bg-slate-200" />
-                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">or</span>
-                <span className="h-px flex-1 bg-slate-200" />
+              <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <IconShield className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+                <p className="text-xs leading-relaxed text-slate-600">
+                  Restricted access. This portal is for authorized Barangay Officers with
+                  pre-provisioned credentials only.
+                </p>
               </div>
 
-              <Link
-                to="/submit-complaint?guest=true"
-                className="flex w-full flex-col items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-3 text-center transition hover:border-blue-400 hover:bg-blue-50"
-              >
-                <span className="text-sm font-semibold text-slate-800">Continue Without Registering</span>
-                <span className="mt-0.5 text-xs text-slate-500">
-                  Submit a complaint anonymously without creating an account.
-                </span>
-              </Link>
+              <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+                {error && (
+                  <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    {error}
+                  </div>
+                )}
+
+                <div>
+                  <label className="label" htmlFor="email">
+                    Official Email Address
+                  </label>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                      <IconMail />
+                    </span>
+                    <input
+                      id="email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      className="input pl-10"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="officer.sdelacruz@iloilo.gov.ph"
+                    />
+                  </div>
+                  <p className="mt-1 pl-1 text-xs text-slate-400">gov.ph domain</p>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="label" htmlFor="password">
+                      Password
+                    </label>
+                    <button type="button" className="text-xs font-semibold text-blue-700 hover:underline">
+                      Forgot password?
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                      <IconLock />
+                    </span>
+                    <input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      autoComplete="current-password"
+                      className="input pl-10 pr-11"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <IconEyeOff /> : <IconEye />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={busy}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-900 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-800"
+                >
+                  {busy ? 'Signing in…' : 'Sign In to Dashboard'}
+                  {!busy && <IconArrow />}
+                </button>
+              </form>
             </div>
 
             <div className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-4 text-sm text-slate-500">
-              <div>
-                Don&apos;t have an account?
-                <Link to="/register" className="ml-1 font-bold text-blue-800 hover:underline">
-                  Register
-                </Link>
-              </div>
+              <span className="text-xs text-slate-400">
+                Credentials are provisioned by the Barangay Secretary.
+              </span>
               <span className="flex items-center gap-1.5 text-xs text-slate-400">
                 <IconShield className="h-3.5 w-3.5" />
-                Data Privacy Act of 2012 Encrypted
+                RA 10173 (Data Privacy Act of 2012) Encrypted
               </span>
             </div>
           </div>
 
-          {/* Right: trust panel */}
+          {/* Right: operations panel */}
           <div className="relative flex flex-col justify-between overflow-hidden bg-blue-50 p-6 sm:p-8 lg:col-span-5">
             <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-200/50 blur-2xl" />
             <div className="pointer-events-none absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-teal-200/50 blur-xl" />
@@ -275,67 +256,48 @@ export default function Login() {
 
               <div>
                 <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-                  Direct &amp; Transparent Local Governance
+                  Case Management Dashboard
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                  eSumbong connects residents directly with the designated Barangay Officer,
-                  ensuring every municipal concern is heard, timestamped, and addressed with
-                  genuine accountability.
+                  The officer workspace for triaging citizen reports from receipt through
+                  verified resolution, with every action recorded.
                 </p>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-start gap-3 rounded-lg bg-white/80 p-3.5 shadow-sm">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-800">
-                    <IconPerson className="h-5 w-5" />
+                    <IconQueue className="h-5 w-5" />
                   </span>
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-900">Direct Officer Review</h3>
+                    <h3 className="text-sm font-semibold text-slate-900">Complaint Queue</h3>
                     <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
-                      All submissions route straight to the Barangay Officer&apos;s verified desk
-                      without bureaucratic delays or departmental hand-offs.
+                      Review incoming reports by status, category and date so nothing waits
+                      unassigned in the queue.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 rounded-lg bg-white/80 p-3.5 shadow-sm">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-100 text-teal-700">
-                    <IconShield className="h-5 w-5" />
+                    <IconLogs className="h-5 w-5" />
                   </span>
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-900">Whistleblower &amp; Privacy Guard</h3>
+                    <h3 className="text-sm font-semibold text-slate-900">Action Logs</h3>
                     <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
-                      Full compliance with Republic Act 10173. Your identity remains protected
-                      whether logged in or filing as a guest.
+                      Every validation, referral and resolution is timestamped and attributed,
+                      keeping closures verifiable.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 rounded-lg bg-white/80 p-3.5 shadow-sm">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-800">
-                    <IconClock className="h-5 w-5" />
+                    <IconShield className="h-5 w-5" />
                   </span>
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-900">48-Hour Acknowledgment Pilot Target</h3>
+                    <h3 className="text-sm font-semibold text-slate-900">Restricted Access</h3>
                     <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
-                      Track status changes in real time with our live reference ID logging system.
+                      Resident accounts are rejected here and redirected to the citizen portal.
                     </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Community notice */}
-              <div className="rounded-xl bg-white p-3 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-700 to-blue-900 text-xl text-white">
-                    🏛️
-                  </div>
-                  <div className="min-w-0">
-                    <span className="block text-[11px] font-bold uppercase tracking-wider text-teal-600">
-                      Community Pilot Notice
-                    </span>
-                    <p className="truncate text-sm font-medium text-slate-900">
-                      Barangay Hall Open: Mon - Fri, 8AM - 5PM
-                    </p>
-                    <p className="text-xs text-slate-500">San Jose Hotline: (02) 8920-1122</p>
                   </div>
                 </div>
               </div>
@@ -345,7 +307,7 @@ export default function Login() {
               <span>Barangay San Jose Community Project</span>
               <span className="flex items-center gap-1 font-semibold text-slate-900">
                 <IconCheck className="h-3.5 w-3.5 text-teal-600" />
-                Civic Verified
+                Officer Access Verified
               </span>
             </div>
           </div>
