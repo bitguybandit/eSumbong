@@ -130,6 +130,24 @@ const METRICS = [
 ];
 
 // --- Icons ---
+
+function IconLock({ className = 'h-4 w-4' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <rect x="5" y="11" width="14" height="9" rx="1.5" />
+      <path strokeLinecap="round" d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </svg>
+  );
+}
+
+function IconPin({ className = 'h-5 w-5' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s6.5-5.4 6.5-11a6.5 6.5 0 0 0-13 0C5.5 15.6 12 21 12 21Z" />
+      <circle cx="12" cy="10" r="2.4" />
+    </svg>
+  );
+}
 function IconShield({ className = 'h-4 w-4' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
@@ -207,6 +225,7 @@ export default function Landing() {
   const metricsHeaderRef = useReveal();
   const metricRefs = useRevealAll(METRICS.length);
   const trackRef = useReveal();
+  const infoCardsRef = useReveal();
   const ctaRef = useReveal();
   const trackSectionRef = useRef(null);
 
@@ -557,67 +576,68 @@ export default function Landing() {
       </section>
 
       {/* Track */}
-      <section id="track" ref={trackSectionRef} className="scroll-mt-16 px-6 py-24">
-        <div className="mx-auto max-w-6xl">
+      <section id="track" ref={trackSectionRef} className="landing-track relative scroll-mt-16 px-6 py-28">
+        <div className="mx-auto max-w-[1180px]">
           <div
             ref={trackRef}
-            className="reveal relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 to-blue-900 px-6 py-16 text-center sm:px-16"
+            className="reveal relative mx-auto max-w-[780px] overflow-hidden rounded-3xl border border-slate-200 bg-white px-6 py-12 shadow-[0_24px_60px_-20px_rgba(15,23,42,0.14),0_4px_12px_-4px_rgba(15,23,42,0.04)] sm:px-10"
           >
-            {/* Decorative animated blobs */}
-            <div className="pointer-events-none absolute -right-32 -top-32 h-[500px] w-[500px] rounded-full bg-teal-500/20 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-32 -left-20 h-[400px] w-[400px] rounded-full bg-blue-500/20 blur-3xl" />
+            {/* Top gradient accent line */}
+            <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-teal-600 to-blue-800" />
 
-            {/* Content wrapper with relative z-index to sit above blobs */}
-            <div className="relative z-10">
-              {/* Icon circle at the top */}
-              <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur">
-                <IconSearch className="h-6 w-6 text-white" />
+            {/* Icon tile */}
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-blue-50 text-teal-600 shadow-[0_8px_20px_-8px_rgba(13,148,136,0.3)]">
+              <IconSearch className="h-6 w-6" />
+            </div>
+
+            {/* Title */}
+            <h2 className="text-center text-[clamp(1.6rem,3vw,2rem)] font-extrabold tracking-tight text-slate-900">
+              Track your complaint
+            </h2>
+
+            {/* Description */}
+            <p className="mx-auto mb-8 mt-3 max-w-[460px] text-center text-[0.95rem] leading-relaxed text-slate-500">
+              Check real-time updates and actions from the Barangay Officer using your issued ticket code.
+            </p>
+
+            {/* Search form */}
+            <form onSubmit={handleTrack} className="mx-auto flex max-w-[560px] flex-col gap-2.5 sm:flex-row">
+              <div className="relative flex-1">
+                <span className="pointer-events-none absolute left-[0.95rem] top-1/2 -translate-y-1/2 text-slate-400">
+                  <IconPin className="h-4 w-4" />
+                </span>
+                <input
+                  type="text"
+                  value={trackingId}
+                  onChange={(e) => setTrackingId(e.target.value)}
+                  placeholder="Enter your Tracking ID (e.g. ES-2026-XXXX)"
+                  className="w-full rounded-xl border-[1.5px] border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-600 focus:bg-white focus:ring-4 focus:ring-teal-600/10"
+                />
               </div>
+              <button
+                type="submit"
+                disabled={trackBusy}
+                className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-blue-800 px-6 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(30,64,175,0.25)] transition hover:-translate-y-px hover:bg-blue-700 disabled:opacity-60"
+              >
+                <IconSearch className="h-4 w-4" />
+                {trackBusy ? 'Checking…' : 'Track Status'}
+              </button>
+            </form>
 
-              {/* Title */}
-              <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl">
-                Track your complaint
-              </h2>
+            {/* Helper text */}
+            <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-slate-400">
+              <IconLock className="h-3 w-3" />
+              Codes are generated automatically when a submission is finalized.
+            </div>
 
-              {/* Description */}
-              <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 sm:text-lg">
-                Check real-time updates and actions from the Barangay Officer using your issued ticket code.
+            {trackError && (
+              <p className="mx-auto mt-6 max-w-[560px] rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {trackError}
               </p>
+            )}
 
-              {/* Search form */}
-              <form onSubmit={handleTrack} className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row">
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    value={trackingId}
-                    onChange={(e) => setTrackingId(e.target.value)}
-                    placeholder="Enter your Tracking ID (e.g. ES-2026-XXXX)"
-                    className="w-full rounded-xl border-0 bg-white px-5 py-3.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={trackBusy}
-                  className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-blue-700 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-600 disabled:opacity-60"
-                >
-                  <IconSearch className="h-4 w-4" />
-                  {trackBusy ? 'Checking…' : 'Track Status'}
-                </button>
-              </form>
-
-              {/* Helper text */}
-              <p className="mt-4 text-xs text-white/50">
-                🔒 Codes are generated automatically when a submission is finalized.
-              </p>
-
-              {trackError && (
-                <p className="mx-auto mt-6 max-w-2xl rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-                  {trackError}
-                </p>
-              )}
-
-              {trackResult && (
-                <div className="mx-auto mt-10 max-w-2xl space-y-4 text-left">
+            {trackResult && (
+              <div className="mx-auto mt-10 max-w-2xl space-y-4 text-left">
               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -681,40 +701,66 @@ export default function Landing() {
                 ) : (
                   <p className="text-sm text-slate-400">No status updates yet.</p>
                 )}
-                  </div>
-                </div>
-              )}
+              </div>
+            </div>
+          )}
+          </div>
+
+          {/* Info cards */}
+          <div ref={infoCardsRef} className="reveal mt-16 grid gap-5 lg:grid-cols-2">
+            <div className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-7 transition-all duration-300 hover:border-blue-800/20 hover:shadow-[0_12px_32px_-12px_rgba(15,23,42,0.08)]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[#EFF4FF] text-[#1E40AF]">
+                <IconPolicy />
+              </span>
+              <div>
+                <h4 className="mb-1.5 text-sm font-bold text-slate-900">Data Privacy Statement</h4>
+                <p className="text-[0.82rem] leading-relaxed text-slate-500">
+                  All submitted citizen details and evidence are held under the Republic Act 10173 (Data
+                  Privacy Act of 2012). Your contact info is visible solely to the designated Barangay
+                  Officer for resolution purposes.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-7 transition-all duration-300 hover:border-blue-800/20 hover:shadow-[0_12px_32px_-12px_rgba(15,23,42,0.08)]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[#EFF4FF] text-[#1E40AF]">
+                <IconPhone />
+              </span>
+              <div>
+                <h4 className="mb-1.5 text-sm font-bold text-slate-900">Barangay Hall Direct Desk</h4>
+                <p className="text-[0.82rem] leading-relaxed text-slate-500">
+                  For emergencies or physical filing, please visit the Barangay San Isidro Hall along
+                  Central Avenue or call the Officer hotdesk directly at (033) 329-0144.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-6xl">
+      <section className="px-6 py-28">
+        <div className="mx-auto max-w-[1180px]">
           <div
             ref={ctaRef}
-            className="reveal relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 to-blue-900 px-6 py-16 text-center sm:px-16"
+            className="landing-cta-card reveal relative overflow-hidden rounded-[28px] px-6 py-16 text-center sm:px-12"
           >
-            {/* Decorative animated blobs */}
-            <div className="pointer-events-none absolute -right-32 -top-32 h-[500px] w-[500px] rounded-full bg-teal-500/20 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-32 -left-20 h-[400px] w-[400px] rounded-full bg-blue-500/20 blur-3xl" />
+            <div className="landing-cta-grid" />
 
             <div className="relative z-10">
-              <h2 className="mx-auto max-w-3xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl">
+              <h2 className="mx-auto max-w-3xl text-[clamp(1.9rem,3.6vw,2.75rem)] font-extrabold leading-tight tracking-tight text-white">
                 Be part of making our barangay cleaner, safer, and more responsive.
               </h2>
 
-              <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 sm:text-lg">
+              <p className="mx-auto mt-5 max-w-[580px] text-base leading-relaxed text-white/70">
                 Your neighborhood reports help barangay officials prioritize streetlights, drainage
                 declogging, and safety patrols where our residents need them most.
               </p>
 
-              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
                 <button
                   type="button"
                   onClick={scrollToTop}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-slate-900 shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-100"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-slate-900 shadow-[0_4px_14px_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(0,0,0,0.2)]"
                 >
                   File a Complaint Now
                   <svg
@@ -741,49 +787,18 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Compliance cards */}
-      <section className="mx-auto max-w-6xl px-4 py-16 md:px-8">
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="flex items-start gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-800">
-              <IconPolicy />
-            </span>
-            <div>
-              <h4 className="font-semibold text-slate-900">Data Privacy Statement</h4>
-              <p className="mt-1 text-sm leading-relaxed text-slate-600">
-                All submitted citizen details and evidence are held under the Republic Act 10173 (Data
-                Privacy Act of 2012). Your contact info is visible solely to the designated Barangay
-                Officer for resolution purposes.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-700">
-              <IconPhone />
-            </span>
-            <div>
-              <h4 className="font-semibold text-slate-900">Barangay Hall Direct Desk</h4>
-              <p className="mt-1 text-sm leading-relaxed text-slate-600">
-                For emergencies or physical filing, please visit the Barangay San Isidro Hall along
-                Central Avenue or call the Officer hotdesk directly at (033) 329-0144.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="border-t border-slate-100 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-center md:flex-row md:px-8 md:text-left">
+      <footer className="landing-footer">
+        <div className="mx-auto flex max-w-[1180px] flex-col items-center justify-between gap-4 border-b border-white/10 px-6 pb-7 pt-12 text-center md:flex-row md:text-left">
           <div>
-            <div className="text-sm font-semibold text-slate-900">eSumbong Civic Action Portal</div>
-            <p className="mt-1 text-xs text-slate-500">
+            <div className="text-sm font-semibold text-white">eSumbong Civic Action Portal</div>
+            <p className="mt-1 text-xs text-white/45">
               Pilot project for Barangay San Isidro, Iloilo City. RA 10173 Data Privacy Act Compliant.
             </p>
           </div>
-          <div className="flex items-center gap-6 text-sm text-slate-500">
-            <span className="cursor-pointer hover:text-blue-800">Privacy Policy</span>
-            <span className="cursor-pointer hover:text-blue-800">Terms of Service</span>
+          <div className="flex items-center gap-6 text-[0.82rem] font-medium text-white/60">
+            <span className="cursor-pointer transition hover:text-white">Privacy Policy</span>
+            <span className="cursor-pointer transition hover:text-white">Terms of Service</span>
           </div>
         </div>
       </footer>
