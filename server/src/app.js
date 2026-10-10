@@ -14,7 +14,13 @@ const app = express();
 
 app.use(
   cors({
-    origin: config.clientUrl,
+    origin: [
+      'http://localhost:5173',
+      // Production frontend on Vercel. Kept literal so the API keeps working
+      // even when CLIENT_URL is unset or stale in the hosting environment.
+      'https://esumbong-san-jose.vercel.app',
+      config.clientUrl,
+    ],
     credentials: true,
   })
 );
