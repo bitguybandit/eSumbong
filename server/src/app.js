@@ -13,11 +13,7 @@ import officerRoutes from './routes/officer.routes.js';
 const app = express();
 
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://esumbong-san-jose.vercel.app', // <-- Your new URL
-    'https://e-sumbong-hazel.vercel.app'   // <-- Keep the old one in case of redirects
-  ],
+  origin: true,
   credentials: true,
 }));
 app.use(express.json({ limit: '2mb' }));
