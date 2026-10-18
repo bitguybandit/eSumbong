@@ -96,6 +96,16 @@ export default function ComplaintDetails() {
     return cat?.default_referral_target || null;
   }, [categories, categoryId]);
 
+  const assignedTargetName = useMemo(() => {
+    const assigned = targets.find((t) => t.id === complaint?.referred_target_id);
+    return assigned?.name || '';
+  }, [targets, complaint]);
+
+  useEffect(() => {
+    if (!showAction) return;
+    setContactWith(assignedTargetName);
+  }, [showAction, assignedTargetName]);
+
   function onCategoryChange(value) {
     setCategoryId(value);
     const cat = categories.find((c) => c.id === value);
@@ -271,7 +281,7 @@ export default function ComplaintDetails() {
           <Section title="Location">
             {complaint.latitude != null && (
               <>
-                <div className="relative h-48 w-full overflow-hidden rounded-lg border border-slate-200">
+                <div className="relative z-0 h-48 w-full overflow-hidden rounded-lg border border-slate-200">
                   <MapView
                     latitude={Number(complaint.latitude)}
                     longitude={Number(complaint.longitude)}
@@ -490,6 +500,12 @@ export default function ComplaintDetails() {
                 </option>
               ))}
             </select>
+            {assignedTargetName && contactWith === assignedTargetName && (
+              <p className="mt-1 text-xs text-ink-400">
+                Auto-filled based on the assigned referral. Change this only if you contacted a
+                different office.
+              </p>
+            )}
           </div>
           <div className="flex gap-3">
             <button className="btn-secondary flex-1" onClick={() => setShowAction(false)}>
