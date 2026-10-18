@@ -6,6 +6,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { parse } from '../utils/validate.js';
 import { generateTrackingId } from '../utils/tracking.js';
 import { getComplaintDetail } from '../utils/complaintDetail.js';
+import { notifyOfficerOfNewComplaint } from '../utils/notify.js';
 import { submitComplaintSchema } from '../schemas/index.js';
 
 const router = Router();
@@ -86,6 +87,9 @@ router.post(
       entry_type: 'submitted',
       description: 'Complaint submitted by resident',
     });
+
+    // Best-effort: the officer notification must not block the submission.
+    await notifyOfficerOfNewComplaint(complaint.id, complaint.tracking_id);
 
     res.status(201).json(complaint);
   })

@@ -17,3 +17,40 @@ export async function notifyResident(complaintId, residentId, message) {
   }
   return data;
 }
+
+/**
+ * Tells the barangay officer that a newly submitted complaint needs review.
+ * Single-barangay pilot: the first officer account receives the notification.
+ */
+export async function notifyOfficerOfNewComplaint(complaintId, trackingId) {
+  try {
+    const { data: officer, error: officerError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('role_type', 'officer')
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    if (officerError) throw officerError;
+    if (!officer) return null;
+
+    const { data, error } = await supabase
+      .from('notifications')
+      .insert({
+        user_id: officer.id,
+        complaint_id: complaintId,
+        message: `New complaint #${trackingId} requires review.`,
+        is_read: false,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    // Best-effort: a failed notification must never block the submission.
+    console.error('[notify] officer notification failed:', err.message);
+    return null;
+  }
+}
