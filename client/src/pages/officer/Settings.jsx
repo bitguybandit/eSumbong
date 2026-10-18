@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { BARANGAY_NAME, initials } from '../../lib/constants';
 
@@ -16,7 +17,8 @@ function Section({ title, description, children }) {
 }
 
 export default function Settings() {
-  const { profile, session } = useAuth();
+  const { profile, session, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const [phone, setPhone] = useState('');
   const [designation, setDesignation] = useState('');
@@ -45,6 +47,14 @@ export default function Settings() {
       }),
     []
   );
+
+  async function handleLogout() {
+    try {
+      await signOut();
+    } finally {
+      navigate('/officer/login');
+    }
+  }
 
   return (
     <div className="space-y-7">
@@ -182,6 +192,20 @@ export default function Settings() {
           Save Changes
         </button>
       </div>
+
+      <section className="officer-card p-6">
+        <h2 className="font-display text-base font-bold tracking-[-0.2px] text-ink">Danger Zone</h2>
+        <p className="mt-1 text-[13px] text-ink-500">
+          Signing out ends this session on this device. You can sign back in anytime.
+        </p>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mt-4 w-full rounded-lg border border-red-900/50 bg-red-600/10 px-4 py-2.5 text-sm font-semibold text-red-500 transition hover:bg-red-600 hover:text-white"
+        >
+          Logout
+        </button>
+      </section>
     </div>
   );
 }
