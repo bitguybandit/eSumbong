@@ -271,7 +271,13 @@ export default function ComplaintDetails() {
           <Section title="Location">
             {complaint.latitude != null && (
               <>
-                <MapView latitude={Number(complaint.latitude)} longitude={Number(complaint.longitude)} />
+                <div className="relative h-48 w-full overflow-hidden rounded-lg border border-slate-200">
+                  <MapView
+                    latitude={Number(complaint.latitude)}
+                    longitude={Number(complaint.longitude)}
+                    heightClass="h-full"
+                  />
+                </div>
                 <p className="mt-2 font-mono text-xs text-ink-400">
                   {complaint.latitude}, {complaint.longitude}
                 </p>

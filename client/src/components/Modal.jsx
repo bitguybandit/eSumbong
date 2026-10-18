@@ -17,7 +17,7 @@ export default function Modal({ open, onClose, title, subtitle, children, width 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
-      <div className={`relative w-full ${width} max-h-[90vh] overflow-y-auto rounded-2xl border border-hairline bg-surface shadow-2xl`}>
+      <div className={`relative w-full ${width} max-h-[90vh] overflow-hidden rounded-2xl border border-hairline bg-surface shadow-2xl`}>
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-hairline bg-surface px-6 py-4">
           <div>
             <h2 className="font-display text-lg font-bold tracking-[-0.2px] text-ink">{title}</h2>
@@ -33,7 +33,7 @@ export default function Modal({ open, onClose, title, subtitle, children, width 
             </svg>
           </button>
         </div>
-        <div className="px-6 py-5">{children}</div>
+        <div className="max-h-[80vh] overflow-y-auto px-6 py-5">{children}</div>
       </div>
     </div>
   );
