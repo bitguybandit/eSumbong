@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { useAuth } from '../context/AuthContext';
 import OfficerSidebar from './OfficerSidebar';
 import OfficerToaster from './OfficerToasts';
+import OfficerNotificationBell from './OfficerNotificationBell';
 import ResidentSidebar from './ResidentSidebar';
 import Logo from './Logo';
 import api from '../lib/api';
@@ -122,10 +123,7 @@ export function OfficerLayout() {
                 </button>
               </div>
 
-              <button type="button" className="officer-icon-btn" title="Notifications" aria-label="Notifications">
-                <IconBell className="h-[18px] w-[18px]" />
-                <span className="officer-icon-btn-dot" />
-              </button>
+              <OfficerNotificationBell />
               <Link to="/officer/settings" className="officer-icon-btn" title="Profile" aria-label="Profile">
                 <IconUser className="h-[18px] w-[18px]" />
               </Link>
