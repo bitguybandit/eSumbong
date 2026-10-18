@@ -1,10 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../lib/supabase';
 import { BARANGAY_NAME, initials } from '../../lib/constants';
 
 const fieldClass =
-  'mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-crimson-500 focus:outline-none focus:ring-2 focus:ring-crimson-500/30';
+  'mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500';
+
+const readOnlyFieldClass =
+  'mt-1 w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-400';
+
+const darkFieldClass =
+  'mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-crimson-500 focus:outline-none focus:ring-2 focus:ring-crimson-500/30';
 
 function Section({ title, description, children }) {
   return (
@@ -16,6 +23,148 @@ function Section({ title, description, children }) {
   );
 }
 
+function ChangePasswordModal({ open, onClose }) {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    if (open) return undefined;
+    setNewPassword('');
+    setConfirmPassword('');
+    setLoading(false);
+    setError('');
+    setSuccess('');
+    return undefined;
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    function onKey(e) {
+      if (e.key === 'Escape' && !loading) onClose();
+    }
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, loading, onClose]);
+
+  if (!open) return null;
+
+  async function handlePasswordChange(e) {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (newPassword.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
+      if (updateError) throw updateError;
+      setNewPassword('');
+      setConfirmPassword('');
+      setSuccess('Password updated successfully.');
+      setTimeout(onClose, 2000);
+    } catch (err) {
+      setError(err?.message || 'Could not update your password. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"
+        onClick={() => !loading && onClose()}
+      />
+      <div
+        className="relative z-10 w-full max-w-md rounded-xl border border-slate-700 bg-slate-900 p-6 text-white shadow-2xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="change-password-title"
+      >
+        <h2 id="change-password-title" className="font-display text-lg font-bold tracking-[-0.2px]">
+          Change Password
+        </h2>
+        <p className="mt-1 text-[13px] text-slate-400">
+          Enter a new password for your officer account.
+        </p>
+
+        <form className="mt-5 space-y-4" onSubmit={handlePasswordChange}>
+          <div>
+            <label htmlFor="new-password" className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              New Password
+            </label>
+            <input
+              id="new-password"
+              type="password"
+              autoComplete="new-password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              minLength={8}
+              required
+              className={darkFieldClass}
+            />
+          </div>
+          <div>
+            <label htmlFor="confirm-password" className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              Confirm New Password
+            </label>
+            <input
+              id="confirm-password"
+              type="password"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              minLength={8}
+              required
+              className={darkFieldClass}
+            />
+          </div>
+
+          {error && (
+            <p className="rounded-lg border border-red-900/50 bg-red-600/10 px-3 py-2 text-sm text-red-400" role="alert">
+              {error}
+            </p>
+          )}
+          {success && (
+            <p className="rounded-lg border border-emerald-900/50 bg-emerald-600/10 px-3 py-2 text-sm text-emerald-400" role="status">
+              {success}
+            </p>
+          )}
+
+          <div className="flex gap-3 pt-1">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={loading}
+              className="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-700 disabled:opacity-60"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="officer-btn-primary flex-1 disabled:opacity-60"
+            >
+              {loading ? 'Updating…' : 'Update Password'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function Settings() {
   const { profile, session, signOut } = useAuth();
   const navigate = useNavigate();
@@ -24,9 +173,11 @@ export default function Settings() {
   const [designation, setDesignation] = useState('');
   const [inAppNotifications, setInAppNotifications] = useState(true);
   const [saved, setSaved] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setPhone(profile?.phone || '');
+    setDesignation(profile?.position || '');
   }, [profile]);
 
   useEffect(() => {
@@ -64,16 +215,32 @@ export default function Settings() {
       </div>
 
       <div className="officer-card p-6">
-        <h2 className="mb-4 font-display text-base font-bold tracking-[-0.2px] text-ink">Account</h2>
-        <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full border border-crimson-600/30 bg-crimson-600 text-xl font-bold text-white">
-            {initials(profile?.full_name)}
-          </div>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="font-display text-base font-bold tracking-[-0.2px] text-ink">Account</h2>
+          <Link
+            to="/officer/settings/profile"
+            className="officer-btn-secondary !px-3 !py-1.5 !text-xs"
+          >
+            Edit Profile
+          </Link>
+        </div>
+        <Link to="/officer/settings/profile" className="flex items-center gap-4 rounded-lg transition hover:opacity-90">
+          {profile?.avatar_url ? (
+            <img
+              src={profile.avatar_url}
+              alt="Profile photo"
+              className="h-16 w-16 rounded-full border border-crimson-600/30 object-cover"
+            />
+          ) : (
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-crimson-600/30 bg-crimson-600 text-xl font-bold text-white">
+              {initials(profile?.full_name)}
+            </div>
+          )}
           <div>
             <div className="text-lg font-semibold text-ink">{profile?.full_name}</div>
             <div className="text-sm text-ink-500">Barangay Officer</div>
           </div>
-        </div>
+        </Link>
 
         <dl className="mt-6 grid gap-4 sm:grid-cols-2">
           <div>
@@ -105,9 +272,8 @@ export default function Settings() {
               type="email"
               value={email}
               readOnly
-              disabled
               placeholder="No email on file"
-              className="mt-1 w-full cursor-not-allowed rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-400"
+              className={readOnlyFieldClass}
             />
           </div>
           <div>
@@ -146,7 +312,11 @@ export default function Settings() {
               <p className="text-sm font-medium text-ink">Password</p>
               <p className="mt-0.5 text-xs text-ink-500">Use a strong, unique password for this account.</p>
             </div>
-            <button type="button" className="officer-btn-secondary shrink-0 !px-3 !py-1.5 !text-xs">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="officer-btn-secondary shrink-0 !px-3 !py-1.5 !text-xs"
+            >
               Change Password
             </button>
           </div>
@@ -186,26 +356,37 @@ export default function Settings() {
         </div>
       </Section>
 
-      <div className="flex items-center justify-end gap-3">
-        {saved && <span className="text-xs font-medium text-emerald-500">Changes saved.</span>}
+      <div className="flex flex-col items-end gap-3">
+        {saved && (
+          <span className="text-xs font-medium text-emerald-500">Changes saved.</span>
+        )}
         <button type="button" className="officer-btn-primary" onClick={() => setSaved(true)}>
           Save Changes
         </button>
-      </div>
-
-      <section className="officer-card p-6">
-        <h2 className="font-display text-base font-bold tracking-[-0.2px] text-ink">Danger Zone</h2>
-        <p className="mt-1 text-[13px] text-ink-500">
-          Signing out ends this session on this device. You can sign back in anytime.
-        </p>
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-4 w-full rounded-lg border border-red-900/50 bg-red-600/10 px-4 py-2.5 text-sm font-semibold text-red-500 transition hover:bg-red-600 hover:text-white"
+          className="inline-flex items-center gap-2 rounded-lg border border-red-500/50 bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
         >
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <path d="m16 17 5-5-5-5" />
+            <path d="M21 12H9" />
+          </svg>
           Logout
         </button>
-      </section>
+      </div>
+
+      <ChangePasswordModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

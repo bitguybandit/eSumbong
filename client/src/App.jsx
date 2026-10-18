@@ -25,6 +25,7 @@ import ComplaintQueue from './pages/officer/ComplaintQueue';
 import ActionLog from './pages/officer/ActionLog';
 import OfficerComplaintDetails from './pages/officer/ComplaintDetails';
 import Settings from './pages/officer/Settings';
+import OfficerEditProfile from './pages/officer/EditProfile';
 
 export default function App() {
   return (
@@ -80,6 +81,7 @@ export default function App() {
         <Route path="action-log" element={<ActionLog />} />
         <Route path="complaints/:id" element={<OfficerComplaintDetails />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="settings/profile" element={<OfficerEditProfile />} />
       </Route>
 
       {/* Public placeholder pages */}

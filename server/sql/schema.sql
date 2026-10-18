@@ -72,6 +72,7 @@ create table if not exists public.users (
   middle_name varchar,
   last_name   varchar,
   phone       varchar,
+  position    varchar,
   avatar_url  varchar,
   created_at  timestamptz not null default now()
 );
