@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import api from '../../lib/api';
+import { supabase } from '../../lib/supabase';
 import Spinner from '../../components/Spinner';
 import OfficerStatusPill from '../../components/OfficerStatusPill';
 import Modal from '../../components/Modal';
@@ -49,6 +50,59 @@ function Timeline({ entries }) {
         );
       })}
     </ol>
+  );
+}
+
+// Records normally store the full public URL, but some hold only the object path.
+// Normalize both forms into a URL Supabase Storage can serve.
+function resolveStorageUrl(value, bucket) {
+  if (!value) return '';
+  const raw = String(value).trim();
+
+  // 1. If it's already a full URL (starts with http), return it as-is.
+  if (raw.startsWith('http')) return raw;
+
+  // 2. If it's a Supabase storage URL path (sometimes they start with /object/...), clean it.
+  let cleanPath = raw;
+  if (raw.includes('/storage/v1/object/public/')) {
+    const parts = raw.split('/storage/v1/object/public/');
+    if (parts[1]) {
+      cleanPath = parts[1];
+      // Remove the bucket name if it's duplicated in the path
+      if (cleanPath.startsWith(bucket + '/')) {
+        cleanPath = cleanPath.substring(bucket.length + 1);
+      }
+    }
+  }
+
+  // 3. Construct the public URL using the Supabase client
+  const { data } = supabase.storage.from(bucket).getPublicUrl(cleanPath);
+  return data?.publicUrl || '';
+}
+
+function PhotoPreview({ src, alt }) {
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => setFailed(false), [src]);
+
+  if (!src || failed) {
+    return (
+      <div className="mt-2 flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-4 py-10 text-sm text-slate-400">
+        {failed ? 'Image failed to load.' : 'No photo attached.'}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-2 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+      <img
+        src={src}
+        alt={alt}
+        onError={() => setFailed(true)}
+        onClick={() => window.open(src, '_blank', 'noopener,noreferrer')}
+        className="max-h-64 w-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+      />
+    </div>
   );
 }
 
@@ -106,6 +160,31 @@ export default function ComplaintDetails() {
     setContactWith(assignedTargetName);
   }, [showAction, assignedTargetName]);
 
+  // Initial population: fill the referral target from the saved record when present,
+  // otherwise from the default of the category the resident chose. Re-runs whenever the
+  // complaint, the categories list, or the selected category changes, and never depends
+  // on the officer touching the category dropdown.
+  useEffect(() => {
+    if (!complaint) return;
+
+    const savedTargetId = complaint.referred_target_id || complaint.referral_target_id;
+    if (savedTargetId) {
+      setReferredTargetId(savedTargetId);
+      return;
+    }
+
+    // categoryId is set alongside the complaint; fall back to it directly in case the
+    // categories request resolves before the officer page has committed state.
+    const selectedCategoryId = categoryId || complaint.category_id;
+    if (categories.length === 0 || !selectedCategoryId) return;
+
+    const category = categories.find((c) => c.id === selectedCategoryId);
+    const defaultTargetId =
+      category?.default_referral_target?.id || category?.default_referral_target_id;
+    if (defaultTargetId) setReferredTargetId(defaultTargetId);
+  }, [complaint, categories, categoryId]);
+
+  // Manual override path: only fires when the officer picks a different category.
   function onCategoryChange(value) {
     setCategoryId(value);
     const cat = categories.find((c) => c.id === value);
@@ -219,6 +298,8 @@ export default function ComplaintDetails() {
   if (!complaint) return <Spinner label="Loading complaint…" />;
 
   const status = complaint.status;
+  const attachmentUrl = resolveStorageUrl(complaint.photo_path, 'complaint-photos');
+  const resolutionImageUrl = resolveStorageUrl(complaint.resolution_photo_path, 'resolution-photos');
   const canCategorize = ['submitted', 'under_review'].includes(status);
   const canAct = status === 'referred';
   const canResolve = status === 'referred';
@@ -269,13 +350,7 @@ export default function ComplaintDetails() {
               <Field label="Submitted By" value={complaint.resident?.full_name || 'Anonymous'} />
               <Field label="Attachments" value={complaint.photo_path ? '1 attachment' : 'No photos attached'} />
             </dl>
-            {complaint.photo_path && (
-              <img
-                src={complaint.photo_path}
-                alt="Complaint attachment"
-                className="mt-4 max-h-72 rounded-lg border border-hairline object-cover"
-              />
-            )}
+            <PhotoPreview src={attachmentUrl} alt="Complaint attachment" />
           </Section>
 
           <Section title="Location">
@@ -446,13 +521,7 @@ export default function ComplaintDetails() {
               )}
             >
               <Field label="Remarks" value={complaint.resolution_remarks} />
-              {complaint.resolution_photo_path && (
-                <img
-                  src={complaint.resolution_photo_path}
-                  alt="Resolution evidence"
-                  className="mt-3 max-h-56 rounded-lg border border-hairline object-cover"
-                />
-              )}
+              <PhotoPreview src={resolutionImageUrl} alt="Resolution evidence" />
               <div className="mt-3">
                 <Field label="Resolved At" value={formatDateTime(complaint.updated_at)} />
               </div>
