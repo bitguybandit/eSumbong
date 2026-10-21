@@ -385,3 +385,138 @@ Development activities include:
 9. Evaluation and refinement
 
 The system is developed iteratively, allowing requirements and implementation details to be refined throughout the development process.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+Make sure the following are installed:
+
+- [Node.js](https://nodejs.org/) v18 or higher
+- npm or yarn
+- A [Supabase](https://supabase.com/) account
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/bitguybandit/eSumbong.git
+cd eSumbong
+```
+
+### 2. Set Up the Backend
+
+Navigate to the server directory:
+
+```bash
+cd server
+npm install
+```
+
+Copy the environment configuration file:
+
+```bash
+cp .env.example .env
+```
+
+Configure the required Supabase credentials inside `.env`.
+
+### 3. Set Up the Database
+
+Open the **Supabase SQL Editor** and run the SQL schema files located in:
+
+```text
+server/sql/
+```
+
+At minimum, run the database schema required by the project before starting the application.
+
+### 4. Set Up the Frontend
+
+From the project root, navigate to the client directory:
+
+```bash
+cd ../client
+npm install
+```
+
+Copy the environment configuration file:
+
+```bash
+cp .env.example .env
+```
+
+Configure the required environment variables.
+
+### 5. Run the Development Servers
+
+Start the backend:
+
+```bash
+cd server
+npm run dev
+```
+
+In a second terminal, start the frontend:
+
+```bash
+cd client
+npm run dev
+```
+
+The frontend will normally be available at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## Guest Access
+
+Residents can submit complaints without creating an account through the **"Continue Without Registering"** option.
+
+Guest users can:
+
+- Submit a complaint
+- Provide complaint details
+- Attach supporting evidence
+- Provide a complaint location
+- Receive a Tracking ID
+- Track their complaint using the Tracking ID
+
+Anonymous complaints do not require a resident account.
+
+---
+
+## Officer Access
+
+Barangay Officer accounts are **pre-provisioned manually** through the Supabase Dashboard.
+
+There is no public officer registration.
+
+The officer login is available through the dedicated route:
+
+```text
+/officer/login
+```
+
+The officer login route is not linked from the public resident-facing navigation.
+
+---
+
+## Project Information
+
+**Project:** eSumbong  
+**Institution:** Western Institute of Technology  
+**Program:** Bachelor of Science in Information Technology  
+**Project Type:** Academic Software Project
+
+eSumbong is developed as an academic software project focused on improving the reporting and resolution workflow of community complaints at the barangay level.
+
+---
+
+## License
+
+This project is developed for academic purposes as part of the Bachelor of Science in Information Technology program at Western Institute of Technology.
