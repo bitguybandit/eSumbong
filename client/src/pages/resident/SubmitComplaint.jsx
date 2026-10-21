@@ -334,7 +334,7 @@ export default function SubmitComplaint() {
           position={position}
           onPositionChange={setPosition}
           onLocationText={setLocationText}
-          heightClass="h-64 lg:h-[420px]"
+          heightClass="h-[250px] md:h-[400px]"
         />
       </div>
 
@@ -357,13 +357,20 @@ export default function SubmitComplaint() {
   );
 
   return (
-    <div className="mx-auto max-w-lg overflow-y-auto pb-24 lg:mx-0 lg:max-w-none md:pb-0">
+    <div
+      className={
+        isGuest
+          ? // Inside GuestLayout's card: fill it, keep gutters for touch targets.
+            'w-full min-w-0 p-4 md:p-6'
+          : 'mx-auto max-w-lg overflow-y-auto pb-24 lg:mx-0 lg:max-w-none md:pb-0'
+      }
+    >
       <WizardHeader
         step={stepIndex + 1}
         total={steps.length}
         label={steps[stepIndex]?.label}
         onBack={back}
-        onClose={() => navigate('/resident')}
+        onClose={() => navigate(isGuest ? '/' : '/resident')}
       />
 
       {error && (
@@ -374,29 +381,31 @@ export default function SubmitComplaint() {
 
       {/* STEP — Category (the map shows beside it only on desktop) */}
       {stepKey === 'category' && (
-        <div className={isDesktop ? 'grid gap-8 lg:grid-cols-2 lg:items-start' : ''}>
+        <div className={isDesktop ? 'flex flex-col gap-6 md:flex-row md:items-start' : 'flex flex-col gap-6'}>
           {/* Category */}
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">What type of issue?</h2>
+          <div className={isDesktop ? 'w-full min-w-0 md:w-1/2' : 'w-full min-w-0'}>
+            <h2 className="text-lg font-bold text-slate-900 md:text-xl">What type of issue?</h2>
             <p className="mt-1 text-sm text-slate-500">
               Select the category that best describes the problem you&apos;re reporting.
             </p>
-            <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="mt-4 grid grid-cols-2 gap-3">
               {categories.map((c) => (
                 <button
                   key={c.id}
                   type="button"
                   onClick={() => setCategoryId(c.id)}
-                  className={`flex flex-col items-center gap-2 rounded-2xl border bg-white p-5 text-center transition active:scale-[0.98] ${
+                  className={`flex min-h-[84px] w-full flex-col items-center justify-center gap-2 rounded-2xl border bg-white p-3 text-center transition active:scale-[0.98] md:p-5 ${
                     categoryId === c.id
                       ? 'border-blue-500 ring-2 ring-blue-200'
                       : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
                   }`}
                 >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-2xl">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-xl md:h-12 md:w-12 md:text-2xl">
                     {categoryIcon(c.name)}
                   </span>
-                  <span className="text-sm font-medium text-slate-800">{c.name}</span>
+                  <span className="w-full break-words text-xs font-medium leading-tight text-slate-800 md:text-sm">
+                    {c.name}
+                  </span>
                 </button>
               ))}
 
@@ -404,16 +413,18 @@ export default function SubmitComplaint() {
               <button
                 type="button"
                 onClick={() => setCategoryId('other')}
-                className={`flex flex-col items-center gap-2 rounded-2xl border bg-white p-5 text-center transition active:scale-[0.98] ${
+                className={`flex min-h-[84px] w-full flex-col items-center justify-center gap-2 rounded-2xl border bg-white p-3 text-center transition active:scale-[0.98] md:p-5 ${
                   categoryId === 'other'
                     ? 'border-blue-500 ring-2 ring-blue-200'
                     : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
                 }`}
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-2xl">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-xl md:h-12 md:w-12 md:text-2xl">
                   📦
                 </span>
-                <span className="text-sm font-medium text-slate-800">Other</span>
+                <span className="w-full break-words text-xs font-medium leading-tight text-slate-800 md:text-sm">
+                  Other
+                </span>
               </button>
             </div>
 
@@ -434,7 +445,7 @@ export default function SubmitComplaint() {
             )}
           </div>
 
-          {isDesktop && locationPanel}
+          {isDesktop && <div className="w-full min-w-0 md:w-1/2">{locationPanel}</div>}
         </div>
       )}
 
@@ -530,12 +541,12 @@ export default function SubmitComplaint() {
         </div>
       )}
 
-      {/* Action buttons — pinned above the mobile tab bar, static on desktop */}
+      {/* Action buttons — pinned to the bottom on mobile, inline from md: up */}
       <div
         className={
           hasBottomNav
-            ? 'fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 right-0 z-40 border-t border-slate-200 bg-white p-4 md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
-            : 'fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
+            ? 'fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 right-0 z-50 border-t border-slate-200 bg-white p-4 md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
+            : 'fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
         }
       >
         {stepKey !== 'review' ? (
