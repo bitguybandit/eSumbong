@@ -220,7 +220,7 @@ export function ResidentLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 md:flex">
+    <div className="min-h-screen overflow-x-hidden bg-slate-50 md:flex">
       {/* Desktop sidebar */}
       <ResidentSidebar />
 
