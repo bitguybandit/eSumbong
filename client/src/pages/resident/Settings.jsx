@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Modal from '../../components/Modal';
 import { useAuth } from '../../context/AuthContext';
 import { initials } from '../../lib/constants';
 
@@ -106,7 +107,7 @@ function Toggle({ on, onChange }) {
   );
 }
 
-function Row({ icon: Icon, label, sub, to, right }) {
+function Row({ icon: Icon, label, sub, to, right, onClick }) {
   const content = (
     <>
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
@@ -124,6 +125,17 @@ function Row({ icon: Icon, label, sub, to, right }) {
       <Link to={to} className="flex items-center gap-3 px-4 py-3 transition hover:bg-slate-50">
         {content}
       </Link>
+    );
+  }
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-slate-50"
+      >
+        {content}
+      </button>
     );
   }
   return <div className="flex items-center gap-3 px-4 py-3">{content}</div>;
@@ -146,6 +158,7 @@ export default function Settings() {
   const { profile, session, signOut } = useAuth();
   const navigate = useNavigate();
   const [prefs, setPrefs] = useState({ push: true, email: true, sms: true, location: true });
+  const [showContact, setShowContact] = useState(false);
 
   const email = session?.user?.email || '';
   const set = (key) => (v) => setPrefs((p) => ({ ...p, [key]: v }));
@@ -236,7 +249,7 @@ export default function Settings() {
 
       <Section title="Support">
         <Row icon={IconHelp} label="Help center" to="/help" />
-        <Row icon={IconMail} label="Contact us" />
+        <Row icon={IconMail} label="Contact us" onClick={() => setShowContact(true)} />
         <Row icon={IconDocument} label="Terms & privacy" to="/terms" />
         <Row icon={IconShield} label="Privacy policy" to="/privacy" />
       </Section>
@@ -247,6 +260,41 @@ export default function Settings() {
       >
         Log out
       </button>
+
+      <Modal
+        open={showContact}
+        onClose={() => setShowContact(false)}
+        title="Contact Barangay San Jose"
+        subtitle="Official Barangay Hall contact details"
+      >
+        <dl className="space-y-3">
+          {[
+            { label: 'Address', value: 'Barangay San Jose Hall, Iloilo City' },
+            { label: 'Hotline', value: '(033) 337-0812' },
+            { label: 'Email', value: 'support@esumbong.gov.ph' },
+            { label: 'Office Hours', value: 'Monday – Friday, 8:00 AM – 5:00 PM' },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="rounded-xl border border-hairline bg-surface-soft px-4 py-3"
+            >
+              <dt className="text-[11px] font-semibold uppercase tracking-wider text-ink-400">
+                {item.label}
+              </dt>
+              <dd className="mt-1 text-sm font-medium text-ink">{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className="mt-5 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setShowContact(false)}
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
