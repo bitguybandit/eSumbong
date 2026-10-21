@@ -196,7 +196,7 @@ export default function ResidentDashboard() {
         <div className="mb-4">
           <h1 className="text-xl font-bold text-slate-900">Good day, {firstName}! 👋</h1>
           <p className="mt-0.5 text-xs text-slate-500">
-            {BARANGAY_NAME} • Resident ID: {residentId}
+            {BARANGAY_NAME} • Resident ID: <span className="break-all">{residentId}</span>
           </p>
         </div>
 
@@ -262,7 +262,7 @@ export default function ResidentDashboard() {
                         </span>
                         <span className="text-slate-400">{timeAgo(c.created_at)}</span>
                       </span>
-                      <span className="mt-1 block text-xs text-slate-400">Ticket: {c.tracking_id}</span>
+                      <span className="mt-1 block truncate text-xs text-slate-400">Ticket: {c.tracking_id}</span>
                     </span>
                     <ChevronRight />
                   </Link>
@@ -307,7 +307,7 @@ export default function ResidentDashboard() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Good day, {firstName}! 👋</h1>
           <p className="text-sm text-slate-500">
-            {BARANGAY_NAME} • Resident ID: {residentId}
+            {BARANGAY_NAME} • Resident ID: <span className="break-all">{residentId}</span>
           </p>
         </div>
 
@@ -393,7 +393,7 @@ export default function ResidentDashboard() {
                       <span>•</span>
                       <span>{timeAgo(c.created_at)}</span>
                       <span>•</span>
-                      <span>Ticket: {c.tracking_id}</span>
+                      <span className="break-all">Ticket: {c.tracking_id}</span>
                     </span>
                   </span>
                   <span className="text-slate-300">›</span>
