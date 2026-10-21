@@ -19,14 +19,14 @@ function PhotoVerificationBadge({ metadata }) {
   if (!make && !model) {
     return (
       <div className="mt-2 inline-flex items-center rounded-full bg-yellow-50 px-2.5 py-0.5 text-xs font-semibold text-yellow-800 ring-1 ring-yellow-600/20 dark:bg-yellow-500/10 dark:text-yellow-400 dark:ring-yellow-500/30">
-        ⚠️ No Camera Data: Possible screenshot, downloaded, or AI-generated image.
+        ⚠️ Unverified Source: No camera metadata found. (Common for screenshots or mobile uploads).
       </div>
     );
   }
 
   return (
     <div className="mt-2 inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-semibold text-green-700 ring-1 ring-green-600/20 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/30">
-      ✅ Original Photo: {[make, model].filter(Boolean).join(' ')}
+      ✅ Verified Original Photo: Taken with {[make, model].filter(Boolean).join(' ')}
     </div>
   );
 }
