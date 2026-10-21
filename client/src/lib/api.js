@@ -7,12 +7,21 @@ const api = axios.create({ baseURL });
 
 // Attach the current Supabase access token to every request.
 // Requests may opt out with `skipAuth: true` (e.g. guest submissions).
+// Guests have no session at all, and resolving one can throw when storage is
+// unavailable (private mode / blocked cookies) — those cases must fall through
+// to an unauthenticated request instead of failing it, since public endpoints
+// such as POST /uploads accept guests.
 api.interceptors.request.use(async (config) => {
   if (config.skipAuth) return config;
-  const { data } = await supabase.auth.getSession();
-  const token = data?.session?.access_token;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  try {
+    const { data } = await supabase.auth.getSession();
+    const token = data?.session?.access_token;
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  } catch {
+    /* no usable session — continue as a guest */
   }
   return config;
 });
