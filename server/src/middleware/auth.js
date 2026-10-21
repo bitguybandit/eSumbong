@@ -54,6 +54,34 @@ export async function requireAuth(req, res, next) {
   }
 }
 
+/**
+ * Best-effort auth: attaches `req.authUser` / `req.user` when a valid token is
+ * present but never rejects, so a route can serve signed-in users and guests
+ * alike (used by photo uploads during a guest complaint).
+ */
+export async function optionalAuth(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!token) return next();
+
+    const { data, error } = await supabase.auth.getUser(token);
+    if (error || !data?.user) return next();
+
+    const { data: profile } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', data.user.id)
+      .single();
+
+    req.authUser = data.user;
+    req.user = profile || null;
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
 /** Restricts a route to a specific role (e.g. 'officer'). */
 export function requireRole(role) {
   return (req, res, next) => {
