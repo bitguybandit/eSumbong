@@ -21,6 +21,13 @@ const MOBILE_STEPS = [
   { key: 'review', label: 'Review' },
 ];
 
+const PHOTO_REQUIRED_ERROR = 'This category requires a photo attachment.';
+
+/** Physical categories carry `requires_photo`; "Other" never requires a photo. */
+function categoryRequiresPhoto(categories, categoryId) {
+  return Boolean(categories.find((c) => c.id === categoryId)?.requires_photo);
+}
+
 function useMediaQuery(query) {
   const [matches, setMatches] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia(query).matches : false
@@ -198,6 +205,14 @@ export default function SubmitComplaint() {
       setError('Please provide a description of at least 10 characters.');
       return;
     }
+    if (
+      stepKey === 'details' &&
+      categoryRequiresPhoto(categories, categoryId) &&
+      !photoUrl
+    ) {
+      setError(PHOTO_REQUIRED_ERROR);
+      return;
+    }
     if (stepIndex < steps.length - 1) setStepKey(steps[stepIndex + 1].key);
   }
 
@@ -231,6 +246,10 @@ export default function SubmitComplaint() {
   }
 
   async function submit() {
+    if (categoryRequiresPhoto(categories, categoryId) && !photoUrl) {
+      setError(PHOTO_REQUIRED_ERROR);
+      return;
+    }
     setBusy(true);
     setError('');
     try {
@@ -265,6 +284,7 @@ export default function SubmitComplaint() {
   if (submitted) return <Confirmation trackingId={submitted.tracking_id} isGuest={isGuest} />;
 
   const selectedCategory = categories.find((c) => c.id === categoryId);
+  const requiresPhoto = categoryRequiresPhoto(categories, categoryId);
   const categoryLabel =
     categoryId === 'other' ? `Other — ${otherText}` : selectedCategory?.name || '—';
   const categoryIconVal = categoryId === 'other' ? '📦' : categoryIcon(selectedCategory?.name);
@@ -421,7 +441,14 @@ export default function SubmitComplaint() {
           <h2 className="text-xl font-bold text-slate-900">Provide details</h2>
 
           <div>
-            <div className="label">Photo Evidence</div>
+            <div className="label flex items-center gap-1.5">
+              Photo Evidence
+              {requiresPhoto ? (
+                <span className="text-xs font-semibold text-red-600">*required*</span>
+              ) : (
+                <span className="text-xs font-normal text-slate-400">(Optional)</span>
+              )}
+            </div>
             <p className="mb-2 text-xs text-slate-500">Clear photos help expedite the resolution process.</p>
             <PhotoUpload
               onChange={(url) => setPhotoUrl(url || '')}

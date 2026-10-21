@@ -15,6 +15,27 @@ export const submitComplaintSchema = z.object({
   anonymous: z.boolean().optional().default(false),
 });
 
+/**
+ * Category-gated photo rule. `categories.requires_photo` decides whether the
+ * submission must carry an uploaded photo; the route resolves the category row
+ * first and then validates the pair here, so the rule stays at the schema layer
+ * while still being driven by data.
+ */
+export const photoRequirementSchema = z
+  .object({
+    requires_photo: z.boolean().nullable().optional(),
+    photo_path: z.string().trim().nullable().optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (value.requires_photo && !value.photo_path) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['photo_path'],
+        message: 'This category requires a photo attachment.',
+      });
+    }
+  });
+
 export const rejectComplaintSchema = z.object({
   reason: z.string().trim().min(3, 'Please select or enter a rejection reason.'),
   notes: z.string().trim().max(1000).optional().nullable(),

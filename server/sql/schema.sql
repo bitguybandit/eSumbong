@@ -57,6 +57,9 @@ create table if not exists public.categories (
   name                        varchar not null,
   description                 text,
   default_referral_target_id  uuid references public.referral_targets (id) on delete set null,
+  -- Physical issues are hard to verify without evidence, so the reporter must
+  -- attach a photo before the complaint is accepted.
+  requires_photo              boolean not null default false,
   created_at                  timestamptz not null default now()
 );
 
@@ -195,16 +198,16 @@ insert into public.referral_targets (name, description, contact_info) values
 -- Seed: categories (with rule-based default referral target)
 -- ---------------------------------------------------------------------------
 
-insert into public.categories (name, description, default_referral_target_id) values
+insert into public.categories (name, description, default_referral_target_id, requires_photo) values
   ('Pothole / Road Damage',       'Potholes, cracks, and road surface damage',
-    (select id from public.referral_targets where name = 'Engineering / Public Works')),
+    (select id from public.referral_targets where name = 'Engineering / Public Works'), true),
   ('Broken Streetlight',          'Non-functional or damaged streetlights',
-    (select id from public.referral_targets where name = 'Utility Provider / Electrical Maintenance')),
+    (select id from public.referral_targets where name = 'Utility Provider / Electrical Maintenance'), true),
   ('Clogged Drainage',            'Blocked drainage, flooding, and water accumulation',
-    (select id from public.referral_targets where name = 'Engineering / Public Works')),
+    (select id from public.referral_targets where name = 'Engineering / Public Works'), true),
   ('Illegal Dumping / Garbage',   'Illegal waste dumping and unsanitary garbage accumulation',
-    (select id from public.referral_targets where name = 'Barangay Sanitation Unit')),
+    (select id from public.referral_targets where name = 'Barangay Sanitation Unit'), true),
   ('Noise Complaint',             'Loud disturbances and noise-related complaints',
-    (select id from public.referral_targets where name = 'Barangay Peace & Order Unit')),
+    (select id from public.referral_targets where name = 'Barangay Peace & Order Unit'), false),
   ('Stray Animal',                'Stray animals and animal-related concerns',
-    (select id from public.referral_targets where name = 'Animal Control Office'));
+    (select id from public.referral_targets where name = 'Animal Control Office'), true);

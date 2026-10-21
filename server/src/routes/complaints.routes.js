@@ -7,7 +7,7 @@ import { parse } from '../utils/validate.js';
 import { generateTrackingId } from '../utils/tracking.js';
 import { getComplaintDetail } from '../utils/complaintDetail.js';
 import { notifyOfficerOfNewComplaint } from '../utils/notify.js';
-import { submitComplaintSchema } from '../schemas/index.js';
+import { submitComplaintSchema, photoRequirementSchema } from '../schemas/index.js';
 
 const router = Router();
 
@@ -53,6 +53,24 @@ router.post(
   guestSubmitLimiter,
   asyncHandler(async (req, res) => {
     const body = parse(submitComplaintSchema, req.body);
+
+    // Some categories are evidence-driven (see `categories.requires_photo`).
+    // Resolve the category, then let the schema reject a photo-less report.
+    const categoryId = body.category_id ?? null;
+    if (categoryId) {
+      const { data: category, error: categoryError } = await supabase
+        .from('categories')
+        .select('requires_photo')
+        .eq('id', categoryId)
+        .maybeSingle();
+
+      if (categoryError) throw categoryError;
+
+      parse(photoRequirementSchema, {
+        requires_photo: category?.requires_photo,
+        photo_path: body.photo_path,
+      });
+    }
 
     // Anonymous reports (or guest submissions with no account) are not linked
     // to a resident account. `is_anonymous` records the explicit intent.
