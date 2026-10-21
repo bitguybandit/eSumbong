@@ -1,6 +1,7 @@
 // Day 3: Frontend routing and base layouts
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import GuestLayout from './components/GuestLayout';
 import { OfficerLayout, ResidentLayout } from './components/Layouts';
 
 import Landing from './pages/Landing';
@@ -37,16 +38,9 @@ export default function App() {
           shared directly with barangay staff. Must stay outside ProtectedRoute. */}
       <Route path="/officer/login" element={<OfficerLogin />} />
       {/* Public guest submission — reachable without auth (see ?guest=true). */}
-      <Route
-        path="/submit-complaint"
-        element={
-          <div className="min-h-screen w-full bg-slate-50 flex justify-center p-4 md:p-8">
-            <div className="w-full max-w-5xl bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-              <SubmitComplaint />
-            </div>
-          </div>
-        }
-      />
+      <Route path="/submit-complaint" element={<GuestLayout />}>
+        <Route index element={<SubmitComplaint />} />
+      </Route>
 
       <Route
         path="/resident"
