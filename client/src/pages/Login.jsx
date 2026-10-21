@@ -146,13 +146,13 @@ export default function Login() {
           type="email"
           required
           autoComplete="email"
-          className="input pl-10"
+          className="input h-12 pl-10"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
         />
       </div>
-      <p className="mt-0.5 pl-1 text-xs text-slate-400">Registered email associated with your resident profile</p>
+      <p className="mt-0.5 hidden pl-1 text-xs text-slate-400 md:block dark:text-slate-500">Registered email associated with your resident profile</p>
     </div>
   );
 
@@ -175,7 +175,7 @@ export default function Login() {
           type={showPassword ? 'text' : 'password'}
           required
           autoComplete="current-password"
-          className="input pl-10 pr-11"
+          className="input h-12 pl-10 pr-11"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
@@ -193,7 +193,7 @@ export default function Login() {
   );
 
   const errorBox = error && (
-    <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+    <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400">{error}</div>
   );
 
   const submitButton = (
@@ -208,39 +208,42 @@ export default function Login() {
   );
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-4 py-8">
+    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-4 py-5 md:py-8 dark:bg-slate-950">
       <div className="w-full max-w-5xl">
         {/* Brand top bar */}
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <Logo size="md" />
-            <div className="leading-tight">
-              <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-teal-700">
+        <div className="mb-3 flex items-center justify-between gap-3 bg-transparent">
+          <div className="flex items-center gap-2.5 md:gap-3">
+            <Logo size="md" className="shrink-0 dark:brightness-0 dark:invert" />
+            <div className="flex items-center leading-tight md:block">
+              <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:bg-teal-500/15 dark:text-teal-300">
                 Barangay San Jose
               </span>
-              <div className="text-xs text-slate-500">Republic of the Philippines • City Local Government</div>
+              <div className="hidden text-xs text-slate-500 md:mt-0.5 md:block dark:text-slate-400">
+                Republic of the Philippines • City Local Government
+              </div>
             </div>
           </div>
         </div>
 
         {/* ===== Resident layout ===== */}
-        <div className="grid w-full max-w-5xl grid-cols-1 items-stretch overflow-hidden rounded-2xl bg-white shadow-xl md:grid-cols-2">
+        <div className="grid w-full max-w-5xl grid-cols-1 items-stretch overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-slate-900 dark:ring-1 dark:ring-slate-800 md:grid-cols-2">
           {/* Left: form */}
-          <div className="flex flex-col justify-between p-8 lg:p-10">
+          <div className="flex flex-col justify-between p-5 sm:p-8 lg:p-10">
             <div>
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-800">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-500/15 dark:text-blue-300">
                   <IconLock className="h-3.5 w-3.5" />
                   Citizen Authentication Portal
                 </span>
               </div>
 
-              <h1 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Welcome back</h1>
-              <p className="mt-1 text-[13px] leading-snug text-slate-500">
+              <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:mt-3 sm:text-3xl dark:text-white">Welcome back</h1>
+              <p className="mt-1 text-[13px] leading-snug text-slate-500 dark:text-slate-400">
                 Sign in to access your submitted reports and check updates from the Barangay Officer.
               </p>
 
-              <div className="mt-4 flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] leading-snug text-slate-600">
+              {/* Desktop-only explainer — mobile gets the compact note above the email field */}
+              <div className="mt-4 hidden items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] leading-snug text-slate-600 md:flex dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300">
                 <svg
                   className="mt-0.5 h-4 w-4 shrink-0 text-slate-400"
                   viewBox="0 0 24 24"
@@ -259,42 +262,45 @@ export default function Login() {
                 </span>
               </div>
 
-              <form onSubmit={handleSubmit} className="mt-3 space-y-2.5">
+              <form onSubmit={handleSubmit} className="mt-2 space-y-3 md:mt-3 md:space-y-2.5">
                 {errorBox}
+                <p className="text-[11px] leading-snug text-slate-500 md:hidden dark:text-slate-400">
+                  Your account keeps your reports in one place — or continue as a guest below.
+                </p>
                 {emailField}
                 {passwordField}
                 {submitButton}
               </form>
 
-              <p className="mt-1 text-center text-xs text-slate-400">
+              <p className="mt-1 text-center text-[11px] text-slate-400 md:text-xs dark:text-slate-500">
                 For your security, we do not disclose whether an email is registered.
               </p>
 
-              <div className="my-1.5 flex items-center gap-3">
-                <span className="h-px flex-1 bg-slate-200" />
-                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">or</span>
-                <span className="h-px flex-1 bg-slate-200" />
+              <div className="my-2 flex items-center gap-3 md:my-1.5">
+                <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">or</span>
+                <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
               </div>
 
               <Link
                 to="/submit-complaint?guest=true"
-                className="flex w-full flex-col items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-center transition hover:border-blue-400 hover:bg-blue-50"
+                className="flex w-full flex-col items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-center transition hover:border-blue-400 hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800/60 dark:hover:border-blue-500 dark:hover:bg-slate-800"
               >
-                <span className="text-sm font-semibold text-slate-800">Continue Without Registering</span>
-                <span className="mt-0.5 text-xs text-slate-500">
+                <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">Continue Without Registering</span>
+                <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                   Submit a complaint anonymously without creating an account.
                 </span>
               </Link>
             </div>
 
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2.5 text-sm text-slate-500">
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2.5 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
               <div>
                 Don&apos;t have an account?
-                <Link to="/register" className="ml-1 font-bold text-blue-800 hover:underline">
+                <Link to="/register" className="ml-1 font-bold text-blue-800 hover:underline dark:text-blue-400">
                   Register
                 </Link>
               </div>
-              <span className="flex items-center gap-1.5 text-xs text-slate-400">
+              <span className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
                 <IconShield className="h-3.5 w-3.5" />
                 Data Privacy Act of 2012 Encrypted
               </span>
@@ -302,21 +308,21 @@ export default function Login() {
           </div>
 
           {/* Right: trust panel */}
-          <div className="relative flex flex-col justify-between bg-gradient-to-br from-blue-50 to-teal-50 p-8 lg:p-10">
+          <div className="relative flex flex-col justify-between bg-gradient-to-br from-blue-50 to-teal-50 p-6 sm:p-8 lg:p-10 dark:from-slate-900 dark:to-slate-800/40">
             <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-200/50 blur-2xl" />
             <div className="pointer-events-none absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-teal-200/50 blur-xl" />
 
             <div className="relative z-10 space-y-4">
-              <span className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800">
+              <span className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-500/15 dark:text-blue-300">
                 <span className="h-2 w-2 rounded-full bg-blue-700" />
                 Barangay San Jose, Iloilo City
               </span>
 
               <div>
-                <h2 className="text-xl font-bold tracking-tight text-slate-900">
+                <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
                   Direct &amp; Transparent Local Governance
                 </h2>
-                <p className="mt-1.5 text-[13px] leading-snug text-slate-600">
+                <p className="mt-1.5 text-[13px] leading-snug text-slate-600 dark:text-slate-300">
                   eSumbong connects residents directly with the designated Barangay Officer,
                   ensuring every municipal concern is heard, timestamped, and addressed with
                   genuine accountability.
@@ -324,55 +330,55 @@ export default function Login() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-start gap-2.5 rounded-lg bg-white/80 p-3 shadow-sm">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-800">
+                <div className="flex items-start gap-2.5 rounded-lg bg-white/80 p-3 shadow-sm dark:bg-slate-800/80">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-800 dark:bg-blue-500/15 dark:text-blue-300">
                     <IconPerson className="h-4 w-4" />
                   </span>
                   <div>
-                    <h3 className="text-[13px] font-semibold text-slate-900">Direct Officer Review</h3>
-                    <p className="text-xs leading-snug text-slate-600">
+                    <h3 className="text-[13px] font-semibold text-slate-900 dark:text-white">Direct Officer Review</h3>
+                    <p className="text-xs leading-snug text-slate-600 dark:text-slate-300">
                       All submissions route straight to the Barangay Officer&apos;s verified desk
                       without bureaucratic delays or departmental hand-offs.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-2.5 rounded-lg bg-white/80 p-3 shadow-sm">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-100 text-teal-700">
+                <div className="flex items-start gap-2.5 rounded-lg bg-white/80 p-3 shadow-sm dark:bg-slate-800/80">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-300">
                     <IconShield className="h-4 w-4" />
                   </span>
                   <div>
-                    <h3 className="text-[13px] font-semibold text-slate-900">Whistleblower &amp; Privacy Guard</h3>
-                    <p className="text-xs leading-snug text-slate-600">
+                    <h3 className="text-[13px] font-semibold text-slate-900 dark:text-white">Whistleblower &amp; Privacy Guard</h3>
+                    <p className="text-xs leading-snug text-slate-600 dark:text-slate-300">
                       Full compliance with Republic Act 10173. Your identity remains protected
                       whether logged in or filing as a guest.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-2.5 rounded-lg bg-white/80 p-3 shadow-sm">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-800">
+                <div className="flex items-start gap-2.5 rounded-lg bg-white/80 p-3 shadow-sm dark:bg-slate-800/80">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-800 dark:bg-blue-500/15 dark:text-blue-300">
                     <IconClock className="h-4 w-4" />
                   </span>
                   <div>
-                    <h3 className="text-[13px] font-semibold text-slate-900">48-Hour Acknowledgment Pilot Target</h3>
-                    <p className="text-xs leading-snug text-slate-600">
+                    <h3 className="text-[13px] font-semibold text-slate-900 dark:text-white">48-Hour Acknowledgment Pilot Target</h3>
+                    <p className="text-xs leading-snug text-slate-600 dark:text-slate-300">
                       Track status changes in real time with our live reference ID logging system.
                     </p>
                   </div>
                 </div>
-                              <div className="flex items-start gap-3 rounded-xl bg-white p-3 shadow-sm">
+                              <div className="flex items-start gap-3 rounded-xl bg-white p-3 shadow-sm dark:bg-slate-800">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-700 text-white">
                   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6M9 12h.01M15 12h.01" />
                   </svg>
                 </span>
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-teal-700">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
                     Community Notice
                   </p>
-                  <h3 className="mt-0.5 text-[13px] font-semibold text-slate-900">
+                  <h3 className="mt-0.5 text-[13px] font-semibold text-slate-900 dark:text-white">
                     Barangay Hall Open: Mon – Fri, 8AM – 5PM
                   </h3>
-                  <p className="text-xs leading-snug text-slate-600">
+                  <p className="text-xs leading-snug text-slate-600 dark:text-slate-300">
                     San Jose Hotline: (+63) 920 835 6781
                   </p>
                 </div>
@@ -380,7 +386,7 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="relative z-10 mt-4 flex items-center justify-between border-t border-blue-100 pt-3 text-xs text-slate-500">
+            <div className="relative z-10 mt-4 flex items-center justify-between border-t border-blue-100 pt-3 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
               <span>Barangay San Jose Community Project</span>
             </div>
           </div>
