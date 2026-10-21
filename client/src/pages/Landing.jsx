@@ -399,7 +399,7 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen scroll-smooth bg-white text-slate-900">
+    <div className="min-h-screen overflow-x-hidden scroll-smooth bg-white text-slate-900">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-8">
@@ -923,11 +923,11 @@ export default function Landing() {
               <div className="mx-auto mt-10 max-w-2xl space-y-4 text-left">
               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                       Tracking ID
                     </div>
-                    <div className="mt-0.5 font-mono text-lg font-bold text-slate-900">
+                    <div className="mt-0.5 break-all font-mono text-lg font-bold text-slate-900">
                       {trackResult.tracking_id}
                     </div>
                     {trackResult.category_id && (
