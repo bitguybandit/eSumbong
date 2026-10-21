@@ -1,12 +1,18 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Privacy() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        <Link to="/" className="text-sm font-semibold text-blue-700 hover:underline">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="text-sm font-semibold text-blue-700 hover:underline"
+        >
           ← Back to eSumbong
-        </Link>
+        </button>
 
         <h1 className="mt-6 text-3xl font-bold tracking-tight text-slate-900">Privacy Policy</h1>
         <p className="mt-2 text-sm text-slate-500">
