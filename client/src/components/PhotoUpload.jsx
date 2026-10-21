@@ -95,12 +95,14 @@ export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'co
               <span className="text-sm font-medium text-blue-700">Uploading…</span>
             </div>
           )}
-          <img
-            src={preview}
-            alt="Photo preview"
-            onError={() => setError('This photo could not be displayed. Try a JPG or PNG instead.')}
-            className="max-h-64 w-full rounded-2xl border border-slate-200 object-cover"
-          />
+          <div className="max-h-48 w-full overflow-hidden rounded-lg border border-slate-200 md:max-h-64">
+            <img
+              src={preview}
+              alt="Photo preview"
+              onError={() => setError('This photo could not be displayed. Try a JPG or PNG instead.')}
+              className="h-full w-full object-cover"
+            />
+          </div>
           <button
             type="button"
             onClick={remove}
