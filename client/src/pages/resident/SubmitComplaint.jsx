@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../lib/api';
 import MapPicker from '../../components/MapPicker';
 import PhotoUpload from '../../components/PhotoUpload';
@@ -150,11 +150,15 @@ function Confirmation({ trackingId, isGuest }) {
 
 export default function SubmitComplaint() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { profile } = useAuth();
   const [searchParams] = useSearchParams();
   // Guest mode (?guest=true): an unauthenticated visitor filing a complaint.
   // They are already anonymous, so the anonymity toggle is not shown.
   const isGuest = searchParams.get('guest') === 'true';
+  // Inside the resident portal the flow sits above the fixed bottom tab bar;
+  // the public guest route has no tab bar, so the action bar can hug the edge.
+  const hasBottomNav = pathname.startsWith('/resident');
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const steps = isDesktop ? DESKTOP_STEPS : MOBILE_STEPS;
   const [categories, setCategories] = useState([]);
@@ -353,7 +357,7 @@ export default function SubmitComplaint() {
   );
 
   return (
-    <div className="mx-auto max-w-lg lg:mx-0 lg:max-w-none">
+    <div className="mx-auto max-w-lg overflow-y-auto pb-24 lg:mx-0 lg:max-w-none md:pb-0">
       <WizardHeader
         step={stepIndex + 1}
         total={steps.length}
@@ -526,15 +530,21 @@ export default function SubmitComplaint() {
         </div>
       )}
 
-      {/* Action buttons */}
-      <div className="mt-6">
+      {/* Action buttons — pinned above the mobile tab bar, static on desktop */}
+      <div
+        className={
+          hasBottomNav
+            ? 'fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 right-0 z-40 border-t border-slate-200 bg-white p-4 md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
+            : 'fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
+        }
+      >
         {stepKey !== 'review' ? (
-          <button onClick={next} disabled={!canContinue} className="btn-primary w-full">
+          <button onClick={next} disabled={!canContinue} className="btn-primary w-full md:w-auto">
             {stepKey === 'details' ? 'Continue to Review' : 'Continue'}
             <span className="ml-1">→</span>
           </button>
         ) : (
-          <button onClick={submit} disabled={busy} className="btn-primary w-full">
+          <button onClick={submit} disabled={busy} className="btn-primary w-full md:w-auto">
             {busy ? 'Submitting…' : 'Submit Report'}
           </button>
         )}
