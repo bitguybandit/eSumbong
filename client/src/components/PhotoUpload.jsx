@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import api from '../lib/api';
 
-const ACCEPT = 'image/jpeg,image/png,image/gif,image/webp,image/heic,image/heif,video/mp4';
-const MAX_BYTES = 10 * 1024 * 1024; // 10MB
+// `image/*` lets iOS offer both "Take Photo" and "Photo Library"; the explicit
+// .heic/.heif extensions keep iPhone captures from being greyed out.
+const ACCEPT = 'image/*, .heic, .heif';
+const MAX_BYTES = 15 * 1024 * 1024; // 15MB — iPhone photos run large
 
 /**
  * Drag-and-drop / tap-to-upload photo input with live thumbnail preview
@@ -33,7 +35,7 @@ export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'co
   async function uploadFile(file) {
     if (!file) return;
     if (file.size > MAX_BYTES) {
-      setError('File is too large. Max size is 10MB.');
+      setError('File is too large. Max size is 15MB.');
       return;
     }
     setError('');
@@ -117,17 +119,34 @@ export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'co
           }}
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
-          className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed px-4 py-10 text-center transition ${
+          className={`relative flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed px-4 py-10 text-center transition ${
             dragging
               ? 'border-blue-500 bg-blue-50'
               : 'border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50/40'
           }`}
         >
+          {/* iOS Safari needs a real, tappable input in the layout — a
+              display:none input can swallow the picker. It is layered under the
+              buttons so "Take Photo" / "Upload Photo" keep their own actions. */}
+          <input
+            ref={inputRef}
+            type="file"
+            accept={ACCEPT}
+            aria-label="Upload photo"
+            className="absolute inset-0 z-0 h-full w-full cursor-pointer opacity-0"
+            onDrop={(e) => e.preventDefault()}
+            onChange={(e) => {
+              console.log('File selected:', e.target.files[0]);
+              uploadFile(e.target.files?.[0]);
+              e.target.value = '';
+            }}
+          />
+
           <span className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-3xl">
             📷
           </span>
 
-          <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="relative z-10 flex flex-wrap items-center justify-center gap-2">
             {showCamera && (
               <button
                 type="button"
@@ -150,20 +169,9 @@ export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'co
             </button>
           </div>
 
-          <span className="text-xs text-slate-400">Drag &amp; drop a file · max 10MB</span>
+          <span className="text-xs text-slate-400">Drag &amp; drop a file · max 15MB</span>
         </div>
       )}
-
-      <input
-        ref={inputRef}
-        type="file"
-        accept={ACCEPT}
-        className="hidden"
-        onChange={(e) => {
-          uploadFile(e.target.files?.[0]);
-          e.target.value = '';
-        }}
-      />
 
       {showCamera && (
         <input
@@ -171,8 +179,11 @@ export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'co
           type="file"
           accept="image/*"
           capture="environment"
-          className="hidden"
+          tabIndex={-1}
+          aria-hidden="true"
+          className="sr-only"
           onChange={(e) => {
+            console.log('File selected:', e.target.files[0]);
             uploadFile(e.target.files?.[0]);
             e.target.value = '';
           }}
