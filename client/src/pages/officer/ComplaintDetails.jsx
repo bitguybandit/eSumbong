@@ -119,7 +119,9 @@ function PhotoVerification({ metadata }) {
     return (
       <div className="mt-2 flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-400">
         <span aria-hidden="true">⚠️</span>
-        <span>No Camera Data: Possible screenshot, downloaded, or AI-generated image.</span>
+        <span>
+          Unverified Source: No camera metadata found. (Common for screenshots or mobile uploads).
+        </span>
       </div>
     );
   }
@@ -131,7 +133,8 @@ function PhotoVerification({ metadata }) {
     <div className="mt-2 flex items-start gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-700 dark:text-emerald-400">
       <span aria-hidden="true">✅</span>
       <span>
-        Original Photo: {[make, model].filter(Boolean).join(' ')}
+        Verified Original Photo: Taken with{' '}
+        <span className="font-semibold">{[make, model].filter(Boolean).join(' ')}</span>
         {hasTakenAt ? ` on ${formatDateTime(takenAt.toISOString())}` : ''}
       </span>
     </div>
