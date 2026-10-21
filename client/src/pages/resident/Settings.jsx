@@ -271,7 +271,7 @@ export default function Settings() {
           {[
             { label: 'Address', value: 'Barangay San Jose Hall, Iloilo City' },
             { label: 'Hotline', value: '(033) 337-0812' },
-            { label: 'Email', value: 'support@esumbong.gov.ph' },
+            { label: 'Email', value: 'support@esumbong.ph' },
             { label: 'Office Hours', value: 'Monday – Friday, 8:00 AM – 5:00 PM' },
           ].map((item) => (
             <div
