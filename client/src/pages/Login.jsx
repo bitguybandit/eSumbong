@@ -213,7 +213,9 @@ export default function Login() {
         {/* Brand top bar */}
         <div className="mb-3 flex items-center justify-between gap-3 bg-transparent">
           <div className="flex items-center gap-2.5 md:gap-3">
-            <Logo size="md" className="shrink-0 dark:brightness-0 dark:invert" />
+            <div className="shrink-0 overflow-hidden bg-transparent">
+              <Logo size="md" className="h-8 w-auto object-contain" />
+            </div>
             <div className="flex items-center leading-tight md:block">
               <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:bg-teal-500/15 dark:text-teal-300">
                 Barangay San Jose
