@@ -91,6 +91,7 @@ router.post(
         longitude: body.longitude,
         location_text: body.location_text,
         photo_path: body.photo_path,
+        photo_metadata: body.photo_metadata ?? null,
         status: 'submitted',
       })
       .select()

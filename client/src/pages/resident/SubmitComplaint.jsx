@@ -169,6 +169,7 @@ export default function SubmitComplaint() {
   const [searching, setSearching] = useState(false);
   const [photoUrl, setPhotoUrl] = useState('');
   const [photoName, setPhotoName] = useState('');
+  const [photoMetadata, setPhotoMetadata] = useState(null);
   const [description, setDescription] = useState('');
   const [anonymous, setAnonymous] = useState(false);
 
@@ -264,6 +265,7 @@ export default function SubmitComplaint() {
         longitude: position.lng,
         location_text: locationText || null,
         photo_path: photoUrl || null,
+        photo_metadata: photoMetadata,
         anonymous,
       };
       const res = await api.post(
@@ -453,6 +455,7 @@ export default function SubmitComplaint() {
             <PhotoUpload
               onChange={(url) => setPhotoUrl(url || '')}
               onName={(n) => setPhotoName(n || '')}
+              onMetadata={setPhotoMetadata}
               showCamera={!isDesktop}
             />
           </div>

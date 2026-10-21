@@ -12,6 +12,16 @@ export const submitComplaintSchema = z.object({
   longitude: decimalString.refine((n) => n >= -180 && n <= 180, 'Invalid longitude.'),
   location_text: z.string().trim().max(255).optional().nullable(),
   photo_path: z.string().trim().max(1000).optional().nullable(),
+  // Snapshot from the upload endpoint's EXIF read. `null`/absent means the
+  // file had no camera data, which the officer UI surfaces as a warning.
+  photo_metadata: z
+    .object({
+      DateTimeOriginal: z.union([z.string(), z.number(), z.date()]).optional().nullable(),
+      Make: z.string().trim().max(120).optional().nullable(),
+      Model: z.string().trim().max(120).optional().nullable(),
+    })
+    .optional()
+    .nullable(),
   anonymous: z.boolean().optional().default(false),
 });
 

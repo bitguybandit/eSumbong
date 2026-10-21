@@ -7,6 +7,30 @@ import OfficerStatusPill from '../../components/OfficerStatusPill';
 import { officerToast } from '../../components/OfficerToasts';
 import { REJECTION_REASONS, categoryIcon, formatDateTime } from '../../lib/constants';
 
+/**
+ * EXIF verification pill for the review modal. Camera tags mean the file most
+ * likely came from a device; a missing snapshot means it carried no EXIF —
+ * typical of screenshots, downloads, and AI-generated images.
+ */
+function PhotoVerificationBadge({ metadata }) {
+  const make = metadata?.Make;
+  const model = metadata?.Model;
+
+  if (!make && !model) {
+    return (
+      <div className="mt-2 inline-flex items-center rounded-full bg-yellow-50 px-2.5 py-0.5 text-xs font-semibold text-yellow-800 ring-1 ring-yellow-600/20 dark:bg-yellow-500/10 dark:text-yellow-400 dark:ring-yellow-500/30">
+        ⚠️ No Camera Data: Possible screenshot, downloaded, or AI-generated image.
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-2 inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-semibold text-green-700 ring-1 ring-green-600/20 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/30">
+      ✅ Original Photo: {[make, model].filter(Boolean).join(' ')}
+    </div>
+  );
+}
+
 export default function ComplaintQueue() {
   const [searchParams] = useSearchParams();
   const [complaints, setComplaints] = useState(null);
@@ -252,7 +276,10 @@ export default function ComplaintQueue() {
         <div className="mt-4">
           <span className="officer-label">Photos</span>
           {reviewing?.photo_path ? (
-            <img className="officer-photo-thumb" src={reviewing.photo_path} alt="Complaint attachment" />
+            <>
+              <img className="officer-photo-thumb" src={reviewing.photo_path} alt="Complaint attachment" />
+              <PhotoVerificationBadge metadata={reviewing.photo_metadata} />
+            </>
           ) : (
             <p className="text-xs text-ink-400">No photos attached</p>
           )}

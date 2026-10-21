@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
+import exifr from 'exifr';
 import { supabase } from '../db.js';
 import { config } from '../config.js';
 import { requireAuth } from '../middleware/auth.js';
@@ -32,6 +33,19 @@ router.post(
     const ext = req.file.originalname.split('.').pop() || 'jpg';
     const path = `${req.user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
+    // Best-effort EXIF read before the bytes reach storage. Screenshots,
+    // downloaded images, and AI output typically carry no camera metadata, so a
+    // null result is itself the signal the officer UI flags.
+    let metadata = null;
+    if (req.file.mimetype.startsWith('image/')) {
+      try {
+        // Parse only the necessary fields to keep it fast
+        metadata = await exifr.parse(req.file.buffer, ['DateTimeOriginal', 'Make', 'Model']);
+      } catch (err) {
+        console.warn('EXIF parsing failed, image may be a screenshot or stripped.');
+      }
+    }
+
     const { error } = await supabase.storage
       .from(bucket)
       .upload(path, req.file.buffer, { contentType: req.file.mimetype, upsert: false });
@@ -39,7 +53,7 @@ router.post(
     if (error) throw error;
 
     const publicUrl = `${config.supabaseUrl}/storage/v1/object/public/${bucket}/${path}`;
-    res.status(201).json({ path, url: publicUrl, bucket });
+    res.status(201).json({ path, url: publicUrl, bucket, metadata: metadata ?? null });
   })
 );
 

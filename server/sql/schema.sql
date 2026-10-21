@@ -96,6 +96,9 @@ create table if not exists public.complaints (
   longitude              decimal not null,
   location_text          varchar,
   photo_path             varchar,
+  -- EXIF snapshot captured at upload time (DateTimeOriginal, Make, Model).
+  -- NULL means the image carried no camera data (screenshot/download/AI).
+  photo_metadata         jsonb,
   status                 complaint_status not null default 'submitted',
   rejection_reason       text,
   resolution_remarks     text,

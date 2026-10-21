@@ -106,6 +106,38 @@ function PhotoPreview({ src, alt }) {
   );
 }
 
+/**
+ * EXIF verification badge. Camera metadata means the file was most likely
+ * produced by a device; a missing `photo_metadata` snapshot means it carried no
+ * EXIF at all — typical of screenshots, downloads, and AI-generated images.
+ */
+function PhotoVerification({ metadata }) {
+  const make = metadata?.Make;
+  const model = metadata?.Model;
+
+  if (!make && !model) {
+    return (
+      <div className="mt-2 flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-400">
+        <span aria-hidden="true">⚠️</span>
+        <span>No Camera Data: Possible screenshot, downloaded, or AI-generated image.</span>
+      </div>
+    );
+  }
+
+  const takenAt = metadata?.DateTimeOriginal ? new Date(metadata.DateTimeOriginal) : null;
+  const hasTakenAt = takenAt && !Number.isNaN(takenAt.getTime());
+
+  return (
+    <div className="mt-2 flex items-start gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+      <span aria-hidden="true">✅</span>
+      <span>
+        Original Photo: {[make, model].filter(Boolean).join(' ')}
+        {hasTakenAt ? ` on ${formatDateTime(takenAt.toISOString())}` : ''}
+      </span>
+    </div>
+  );
+}
+
 export default function ComplaintDetails() {
   const { id } = useParams();
   const [complaint, setComplaint] = useState(null);
@@ -351,6 +383,7 @@ export default function ComplaintDetails() {
               <Field label="Attachments" value={complaint.photo_path ? '1 attachment' : 'No photos attached'} />
             </dl>
             <PhotoPreview src={attachmentUrl} alt="Complaint attachment" />
+            {complaint.photo_path && <PhotoVerification metadata={complaint.photo_metadata} />}
           </Section>
 
           <Section title="Location">

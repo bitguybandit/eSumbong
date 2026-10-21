@@ -9,7 +9,7 @@ const MAX_BYTES = 10 * 1024 * 1024; // 10MB
  * and a remove control. Uploads through POST /api/uploads and reports the
  * final URL back via `onChange`.
  */
-export default function PhotoUpload({ onChange, onName, bucket = 'complaint-photos', showCamera = false }) {
+export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'complaint-photos', showCamera = false }) {
   const inputRef = useRef(null);
   const cameraRef = useRef(null);
   const blobRef = useRef('');
@@ -55,11 +55,13 @@ export default function PhotoUpload({ onChange, onName, bucket = 'complaint-phot
       const res = await api.post('/uploads', fd);
       // Only the form needs the stored URL; the preview keeps the blob.
       onChange?.(res.data.url);
+      onMetadata?.(res.data?.metadata ?? null);
     } catch (err) {
       setError(err.message);
       clearBlob();
       setPreview('');
       onChange?.(null);
+      onMetadata?.(null);
     } finally {
       setUploading(false);
     }
@@ -71,6 +73,7 @@ export default function PhotoUpload({ onChange, onName, bucket = 'complaint-phot
     setError('');
     onChange?.(null);
     onName?.(null);
+    onMetadata?.(null);
     if (inputRef.current) inputRef.current.value = '';
     if (cameraRef.current) cameraRef.current.value = '';
   }
