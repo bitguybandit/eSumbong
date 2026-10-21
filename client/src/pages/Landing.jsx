@@ -612,7 +612,7 @@ export default function Landing() {
       </aside>
 
       {/* Hero */}
-      <section id="home" className="landing-hero relative overflow-hidden px-6 pb-24 pt-36">
+      <section id="home" className="landing-hero relative overflow-hidden px-6 pb-24 pt-24 md:pt-36">
         <div className="landing-hero-bg" />
         <div className="landing-hero-grid" />
         <div className="relative mx-auto grid max-w-[1180px] items-center gap-10 lg:grid-cols-12">
