@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import multer from 'multer';
 import exifr from 'exifr';
 // `supabase` is the server-side client created with SUPABASE_SERVICE_ROLE_KEY
@@ -9,6 +10,21 @@ import { optionalAuth } from '../middleware/auth.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
 const router = Router();
+
+// This route is public so guests can attach a photo while filing a complaint.
+// Cap anonymous uploads per IP so the open endpoint cannot be used to fill
+// storage; signed-in users are exempt and never throttled here.
+const guestUploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 50, // 50 unauthenticated uploads per IP per hour
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => Boolean(req.user),
+  message: {
+    error: 'Too many uploads from this network. Please try again later or sign in.',
+  },
+});
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 15 * 1024 * 1024 }, // 15MB — matches the client cap
@@ -34,6 +50,7 @@ function uploadSingle(req, res, next) {
 router.post(
   '/',
   optionalAuth,
+  guestUploadLimiter,
   uploadSingle,
   asyncHandler(async (req, res) => {
     if (!req.file) {
