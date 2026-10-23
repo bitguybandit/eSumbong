@@ -112,7 +112,7 @@ export default function ResidentSidebar() {
   }, []);
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
+    <aside className="hidden h-full w-64 shrink-0 flex-col overflow-y-auto border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 md:flex">
       {/* Brand */}
       <div className="border-b border-slate-100 px-5 py-5">
         <Logo size="lg" />

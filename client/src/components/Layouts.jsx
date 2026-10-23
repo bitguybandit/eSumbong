@@ -220,12 +220,12 @@ export function ResidentLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-slate-50 md:flex">
+    <div className="flex h-screen w-full overflow-hidden bg-slate-50 dark:bg-slate-900">
       {/* Desktop sidebar */}
       <ResidentSidebar />
 
       {/* Main column */}
-      <div className="min-w-0 flex-1">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         {/* Top header (mobile only) */}
         <header className="sticky top-0 z-40 border-b border-slate-200 bg-white md:hidden">
           <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
@@ -254,7 +254,7 @@ export function ResidentLayout() {
           column spans the full viewport beside the sidebar, with padding
           that scales px-8 -> lg:px-12.
         */}
-        <main className="mx-auto w-full max-w-3xl px-4 pb-36 pt-4 md:mx-0 md:max-w-none md:px-8 md:pb-12 md:pt-8 lg:px-12">
+        <main className="mx-auto w-full max-w-3xl flex-1 overflow-y-auto overflow-x-hidden px-4 pb-36 pt-4 md:mx-0 md:max-w-none md:px-8 md:pb-12 md:pt-8 lg:px-12">
           <Outlet />
 
           {/* Footer (desktop) */}
