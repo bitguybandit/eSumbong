@@ -596,17 +596,17 @@ export default function SubmitComplaint() {
       <div
         className={
           hasBottomNav
-            ? 'fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 right-0 z-50 border-t border-slate-200 bg-white p-4 md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
-            : 'fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
+            ? 'fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 right-0 z-50 flex w-full border-t border-slate-200 bg-white p-4 md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
+            : 'fixed bottom-0 left-0 right-0 z-50 flex w-full border-t border-slate-200 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:static md:bottom-auto md:mt-6 md:border-0 md:bg-transparent md:p-0'
         }
       >
         {stepKey !== 'review' ? (
-          <button onClick={next} disabled={!canContinue} className="btn-primary w-full md:w-auto">
+          <button onClick={next} disabled={!canContinue} className="btn-primary w-full justify-center">
             {stepKey === 'details' ? 'Continue to Review' : 'Continue'}
             <span className="ml-1">→</span>
           </button>
         ) : (
-          <button onClick={submit} disabled={busy} className="btn-primary w-full md:w-auto">
+          <button onClick={submit} disabled={busy} className="btn-primary w-full justify-center">
             {busy ? 'Submitting…' : 'Submit Report'}
           </button>
         )}
