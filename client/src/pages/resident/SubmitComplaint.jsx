@@ -28,6 +28,25 @@ function categoryRequiresPhoto(categories, categoryId) {
   return Boolean(categories.find((c) => c.id === categoryId)?.requires_photo);
 }
 
+// Display order for the wizard grid. The API returns rows alphabetically, which
+// buries "Other" in the middle; this pins it last and unknown names just above
+// it (their relative API order is preserved by the stable sort).
+const CATEGORY_RANK = new Map([
+  ['Broken Streetlight', 0],
+  ['Clogged Drainage', 1],
+  ['Illegal Dumping / Garbage', 2],
+  ['Noise Complaint', 3],
+  ['Pothole / Road Damage', 4],
+  ['Stray Animal', 5],
+  ['Other', 99],
+]);
+const UNKNOWN_CATEGORY_RANK = 98;
+
+function sortCategories(categories) {
+  const rank = (category) => CATEGORY_RANK.get(category.name) ?? UNKNOWN_CATEGORY_RANK;
+  return [...categories].sort((a, b) => rank(a) - rank(b));
+}
+
 /**
  * iOS Safari keeps the page zoomed in after a focused field blurs. Re-applying
  * the viewport with scaling locked for one tick snaps it back to normal; the
@@ -202,7 +221,7 @@ export default function SubmitComplaint() {
   const [submitted, setSubmitted] = useState(null);
 
   useEffect(() => {
-    api.get('/categories').then((res) => setCategories(res.data)).catch(() => {});
+    api.get('/categories').then((res) => setCategories(sortCategories(res.data))).catch(() => {});
   }, []);
 
   function next() {
