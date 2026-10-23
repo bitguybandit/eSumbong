@@ -83,8 +83,38 @@ router.post(
     let metadata = null;
     if (req.file.mimetype.startsWith('image/')) {
       try {
-        // Parse only the necessary fields to keep it fast
-        metadata = await exifr.parse(req.file.buffer, ['DateTimeOriginal', 'Make', 'Model']);
+        // Parse every container block instead of picking tag names: a `pick`
+        // filter only matches tag names, so HEIC/Android files that keep
+        // Make/Model in IFD0 and the timestamp in the EXIF sub-IFD came back
+        // empty even though the tags were present.
+        const raw = await exifr.parse(req.file.buffer, {
+          tiff: true,
+          ifd0: true,
+          exif: true,
+          translateValues: true,
+          reviveValues: true,
+        });
+        console.log('[EXIF DEBUG]', raw);
+
+        if (raw) {
+          // Fall back across the tags different vendors use for capture time.
+          const takenAtRaw = raw.DateTimeOriginal ?? raw.CreateDate ?? raw.ModifyDate ?? null;
+          const takenAt = takenAtRaw ? new Date(takenAtRaw) : null;
+
+          // `photo_metadata` is a jsonb column validated by zod, which expects
+          // plain strings — normalize the timestamp to an ISO 8601 string.
+          metadata = {
+            Make: raw.Make ?? null,
+            Model: raw.Model ?? null,
+            DateTimeOriginal:
+              takenAt && !Number.isNaN(takenAt.getTime()) ? takenAt.toISOString() : null,
+          };
+
+          // An all-empty projection is the same signal as no EXIF at all.
+          if (!metadata.Make && !metadata.Model && !metadata.DateTimeOriginal) {
+            metadata = null;
+          }
+        }
       } catch (err) {
         console.warn('EXIF parsing failed, image may be a screenshot or stripped.');
       }
@@ -97,9 +127,7 @@ router.post(
         req.file.originalname,
         metadata
           ? `Make=${metadata.Make ?? '—'} Model=${metadata.Model ?? '—'} DateTimeOriginal=${
-              metadata.DateTimeOriginal instanceof Date
-                ? metadata.DateTimeOriginal.toISOString()
-                : metadata.DateTimeOriginal ?? '—'
+              metadata.DateTimeOriginal ?? '—'
             }`
           : 'null (no camera tags found)',
         req.file.size,
