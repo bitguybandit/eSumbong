@@ -7,6 +7,8 @@ import { OfficerLayout, ResidentLayout } from './components/Layouts';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Help from './pages/Help';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
@@ -34,6 +36,10 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      {/* Password recovery — public: the emailed link authenticates the user
+          with a temporary recovery session, so no ProtectedRoute here. */}
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       {/* Officer entry point — intentionally unlinked from the public site and
           shared directly with barangay staff. Must stay outside ProtectedRoute. */}
       <Route path="/officer/login" element={<OfficerLogin />} />

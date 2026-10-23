@@ -162,9 +162,9 @@ export default function Login() {
         <label className="label" htmlFor="password">
           Password
         </label>
-        <button type="button" className="text-xs font-semibold text-blue-700 hover:underline">
+        <Link to="/forgot-password" className="text-xs font-semibold text-blue-700 hover:underline">
           Forgot password?
-        </button>
+        </Link>
       </div>
       <div className="relative">
         <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
