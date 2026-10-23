@@ -11,7 +11,7 @@ const MAX_BYTES = 15 * 1024 * 1024; // 15MB — iPhone photos run large
  * and a remove control. Uploads through POST /api/uploads and reports the
  * final URL back via `onChange`.
  */
-export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'complaint-photos', showCamera = false }) {
+export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'complaint-photos', showCamera = false, skipAuth = false }) {
   const inputRef = useRef(null);
   const cameraRef = useRef(null);
   const blobRef = useRef('');
@@ -54,7 +54,8 @@ export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'co
       const fd = new FormData();
       fd.append('file', file);
       fd.append('bucket', bucket);
-      const res = await api.post('/uploads', fd);
+      // Guest flows upload without any credential at all (see `skipAuth`).
+      const res = await api.post('/uploads', fd, skipAuth ? { skipAuth: true } : undefined);
       // Only the form needs the stored URL; the preview keeps the blob.
       onChange?.(res.data.url);
       onMetadata?.(res.data?.metadata ?? null);

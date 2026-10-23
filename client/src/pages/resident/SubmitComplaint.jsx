@@ -472,6 +472,7 @@ export default function SubmitComplaint() {
               onName={(n) => setPhotoName(n || '')}
               onMetadata={setPhotoMetadata}
               showCamera={!isDesktop}
+              skipAuth={isGuest}
             />
           </div>
 
