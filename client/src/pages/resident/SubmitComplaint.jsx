@@ -28,6 +28,22 @@ function categoryRequiresPhoto(categories, categoryId) {
   return Boolean(categories.find((c) => c.id === categoryId)?.requires_photo);
 }
 
+/**
+ * iOS Safari keeps the page zoomed in after a focused field blurs. Re-applying
+ * the viewport with scaling locked for one tick snaps it back to normal; the
+ * original content is then restored so pinch-zoom stays available.
+ */
+function resetZoom() {
+  const viewport = document.querySelector('meta[name="viewport"]');
+  if (!viewport) return;
+  const original = viewport.getAttribute('content') || 'width=device-width, initial-scale=1.0';
+  viewport.setAttribute(
+    'content',
+    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+  );
+  setTimeout(() => viewport.setAttribute('content', original), 100);
+}
+
 function useMediaQuery(query) {
   const [matches, setMatches] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia(query).matches : false
@@ -317,10 +333,11 @@ export default function SubmitComplaint() {
       <div className="relative mt-4">
         <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
         <input
-          className="input pl-9 pr-16"
+          className="input pl-9 pr-16 text-base md:text-sm"
           placeholder="Search address or landmark"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onBlur={resetZoom}
           onKeyDown={(e) => e.key === 'Enter' && searchLocation()}
         />
         <button
@@ -424,10 +441,11 @@ export default function SubmitComplaint() {
                 </label>
                 <input
                   id="other-text"
-                  className="input"
+                  className="input text-base md:text-sm"
                   placeholder="e.g. Fallen tree blocking the road"
                   value={otherText}
                   onChange={(e) => setOtherText(e.target.value)}
+                  onBlur={resetZoom}
                   autoFocus
                 />
               </div>
@@ -472,10 +490,11 @@ export default function SubmitComplaint() {
             <textarea
               id="wiz-desc"
               rows={4}
-              className="input"
+              className="input text-base md:text-sm"
               placeholder="Describe the issue in detail…"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              onBlur={resetZoom}
             />
           </div>
 

@@ -558,3 +558,14 @@
 .landing-footer {
   background: #0a1535;
 }
+
+/* iOS Safari auto-zooms the page whenever a focused field's text is under 16px.
+   Pinning every form control to 16px on phones removes that zoom at the source.
+   The desktop sizes are untouched: this only applies up to 768px. */
+@media screen and (max-width: 768px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
