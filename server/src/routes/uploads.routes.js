@@ -66,7 +66,7 @@ router.post(
     // evidence stay with signed-in residents and officers.
     const allowedBuckets = isGuest
       ? new Set(['complaint-photos'])
-      : new Set(['complaint-photos', 'resolution-photos', 'avatars']);
+      : new Set(['complaint-photos', 'resolution-photos', 'profile-photos']);
     const bucket = allowedBuckets.has(req.body.bucket) ? req.body.bucket : 'complaint-photos';
     const ext = req.file.originalname.split('.').pop() || 'jpg';
     const safeName = req.file.originalname.replace(/[^A-Za-z0-9._-]/g, '_').slice(-80) || 'upload';

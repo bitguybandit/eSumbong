@@ -32,7 +32,7 @@ export default function EditProfile() {
     if (!file) return;
     const fd = new FormData();
     fd.append('file', file);
-    fd.append('bucket', 'avatars');
+    fd.append('bucket', 'profile-photos');
     setUploading(true);
     setError('');
     try {

@@ -10,9 +10,9 @@ const inputClass =
 const readOnlyClass =
   'mt-1 w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-400';
 
-// Buckets tried in order. `profile-photos` is the dedicated bucket; `avatars`
-// is the long-standing one already provisioned in this project.
-const AVATAR_BUCKETS = ['profile-photos', 'avatars'];
+// `profile-photos` is the only avatar bucket provisioned in this project;
+// `avatars` never existed in storage, so uploads to it failed outright.
+const AVATAR_BUCKETS = ['profile-photos'];
 
 export default function EditProfile() {
   const { profile, session, refreshProfile } = useAuth();
