@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../lib/api';
 import MapPicker from '../../components/MapPicker';
@@ -204,12 +204,17 @@ export default function SubmitComplaint() {
   const [busy, setBusy] = useState(false);
   const [submitted, setSubmitted] = useState(null);
 
+  // Focus/blur helpers for the description field: keep the anonymous toggle
+  // visible above the iOS keyboard while the user types.
+  const descriptionRef = useRef(null);
+  const anonymousRef = useRef(null);
+
   useEffect(() => {
     api.get('/categories').then((res) => setCategories(sortCategories(res.data))).catch(() => {});
   }, []);
 
-  const handleBlur = () => {
-    // Force iOS to zoom out by resetting the viewport scale
+  // Shared iOS zoom-out trick; the plain text fields only need this part.
+  const resetViewport = () => {
     const viewportMeta = document.querySelector('meta[name="viewport"]');
     if (viewportMeta) {
       viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
@@ -218,6 +223,26 @@ export default function SubmitComplaint() {
         viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
       }, 150);
     }
+  };
+
+  const handleFocus = () => {
+    // Add a slight delay to allow the native iOS keyboard to animate up first
+    setTimeout(() => {
+      // Scroll the anonymous toggle into view, aligning it to the bottom of the visible area
+      if (anonymousRef.current) {
+        anonymousRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    }, 300);
+  };
+
+  const handleBlur = () => {
+    // Force zoom back to normal (for iOS)
+    resetViewport();
+
+    // Smoothly scroll back to the top of the form so the user sees everything again
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 150);
   };
 
   function next() {
@@ -352,7 +377,7 @@ export default function SubmitComplaint() {
           placeholder="Search address or landmark"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onBlur={handleBlur}
+          onBlur={resetViewport}
           onKeyDown={(e) => e.key === 'Enter' && searchLocation()}
         />
         <button
@@ -460,7 +485,7 @@ export default function SubmitComplaint() {
                   placeholder="e.g. Fallen tree blocking the road"
                   value={otherText}
                   onChange={(e) => setOtherText(e.target.value)}
-                  onBlur={handleBlur}
+                  onBlur={resetViewport}
                   autoFocus
                 />
               </div>
@@ -504,17 +529,19 @@ export default function SubmitComplaint() {
             </label>
             <textarea
               id="wiz-desc"
+              ref={descriptionRef}
               rows={4}
               className="input"
               placeholder="Describe the issue in detail…"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              onFocus={handleFocus}
               onBlur={handleBlur}
             />
           </div>
 
           {profile && !isGuest && (
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
+            <div ref={anonymousRef} className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
               <div>
                 <div className="text-sm font-semibold text-slate-900">Submit Anonymously</div>
                 <div className="text-xs text-slate-500">
