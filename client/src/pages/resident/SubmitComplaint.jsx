@@ -47,22 +47,6 @@ function sortCategories(categories) {
   return [...categories].sort((a, b) => rank(a) - rank(b));
 }
 
-/**
- * iOS Safari keeps the page zoomed in after a focused field blurs. Re-applying
- * the viewport with scaling locked for one tick snaps it back to normal; the
- * original content is then restored so pinch-zoom stays available.
- */
-function resetZoom() {
-  const viewport = document.querySelector('meta[name="viewport"]');
-  if (!viewport) return;
-  const original = viewport.getAttribute('content') || 'width=device-width, initial-scale=1.0';
-  viewport.setAttribute(
-    'content',
-    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
-  );
-  setTimeout(() => viewport.setAttribute('content', original), 100);
-}
-
 function useMediaQuery(query) {
   const [matches, setMatches] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia(query).matches : false
@@ -224,6 +208,18 @@ export default function SubmitComplaint() {
     api.get('/categories').then((res) => setCategories(sortCategories(res.data))).catch(() => {});
   }, []);
 
+  const handleBlur = () => {
+    // Force iOS to zoom out by resetting the viewport scale
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (viewportMeta) {
+      viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      // Restore the original accessible viewport shortly after
+      setTimeout(() => {
+        viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
+      }, 150);
+    }
+  };
+
   function next() {
     setError('');
     if (stepKey === 'category') {
@@ -352,11 +348,11 @@ export default function SubmitComplaint() {
       <div className="relative mt-4">
         <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
         <input
-          className="input pl-9 pr-16 text-base md:text-sm"
+          className="input pl-9 pr-16"
           placeholder="Search address or landmark"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onBlur={resetZoom}
+          onBlur={handleBlur}
           onKeyDown={(e) => e.key === 'Enter' && searchLocation()}
         />
         <button
@@ -460,11 +456,11 @@ export default function SubmitComplaint() {
                 </label>
                 <input
                   id="other-text"
-                  className="input text-base md:text-sm"
+                  className="input"
                   placeholder="e.g. Fallen tree blocking the road"
                   value={otherText}
                   onChange={(e) => setOtherText(e.target.value)}
-                  onBlur={resetZoom}
+                  onBlur={handleBlur}
                   autoFocus
                 />
               </div>
@@ -509,11 +505,11 @@ export default function SubmitComplaint() {
             <textarea
               id="wiz-desc"
               rows={4}
-              className="input text-base md:text-sm"
+              className="input"
               placeholder="Describe the issue in detail…"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              onBlur={resetZoom}
+              onBlur={handleBlur}
             />
           </div>
 
