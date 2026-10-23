@@ -51,35 +51,44 @@ export default function ChangePassword() {
     { label: 'Passwords match', ok: matches },
   ];
 
+  // Every checklist item must be green before the form can be submitted.
+  const isValid = reqs.every((r) => r.ok);
+
   const toggle = (key) => setShow((s) => ({ ...s, [key]: !s[key] }));
 
   async function submit(e) {
     e.preventDefault();
     setError('');
-    if (!reqs.every((r) => r.ok)) {
+    setSuccess(false);
+    if (!isValid) {
       setError('Please meet all password requirements.');
       return;
     }
     setBusy(true);
     try {
       const email = session?.user?.email;
-      // Verify the current password by re-authenticating.
-      const { error: reauthErr } = await supabase.auth.signInWithPassword({ email, password: current });
+      // Re-authenticate first: Supabase never reveals whether the current
+      // password is right, so a failed sign-in is the verification itself.
+      const { error: reauthErr } = await supabase.auth.signInWithPassword({
+        email,
+        password: current,
+      });
       if (reauthErr) {
-        setError('Current password is incorrect.');
-        setBusy(false);
+        setError('Incorrect current password.');
         return;
       }
       const { error: updateErr } = await supabase.auth.updateUser({ password: next });
       if (updateErr) {
         setError(updateErr.message);
-        setBusy(false);
         return;
       }
       setSuccess(true);
-      setTimeout(() => navigate('/resident/settings'), 1200);
+      setCurrent('');
+      setNext('');
+      setConfirm('');
     } catch (err) {
       setError(err.message);
+    } finally {
       setBusy(false);
     }
   }
@@ -106,7 +115,7 @@ export default function ChangePassword() {
       )}
       {success && (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-          Password changed ✓
+          Password updated successfully
         </div>
       )}
 
@@ -156,7 +165,11 @@ export default function ChangePassword() {
           </ul>
         </div>
 
-        <button type="submit" disabled={busy} className="btn-primary w-full">
+        <button
+          type="submit"
+          disabled={!isValid || busy}
+          className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
+        >
           {busy ? 'Updating…' : 'Confirm'}
         </button>
       </form>
