@@ -153,9 +153,13 @@ export default function SubmitComplaint() {
   const { pathname } = useLocation();
   const { profile } = useAuth();
   const [searchParams] = useSearchParams();
-  // Guest mode (?guest=true): an unauthenticated visitor filing a complaint.
-  // They are already anonymous, so the anonymity toggle is not shown.
-  const isGuest = searchParams.get('guest') === 'true';
+  // Guest mode: an unauthenticated visitor filing a complaint. The public
+  // `/submit-complaint` route is guest-only, so deriving this from the route
+  // (not just `?guest=true`) keeps mobile/in-app browsers that drop the query
+  // string from falling back to resident behavior and sending a token.
+  // Guests are already anonymous, so the anonymity toggle is not shown.
+  const isGuest =
+    pathname.startsWith('/submit-complaint') || searchParams.get('guest') === 'true';
   // Inside the resident portal the flow sits above the fixed bottom tab bar;
   // the public guest route has no tab bar, so the action bar can hug the edge.
   const hasBottomNav = pathname.startsWith('/resident');
