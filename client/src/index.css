@@ -36,6 +36,18 @@
   body {
     @apply bg-slate-100 text-slate-800;
   }
+
+  /* iOS Safari zooms the whole page when a focused form control renders below
+     16px. Our `.input`/`.officer-input` classes use 13-14px, so on phones the
+     controls are bumped to the 16px threshold instead of disabling pinch-zoom
+     via the viewport meta tag (which breaks accessibility). */
+  @media screen and (max-width: 768px) {
+    input,
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
 }
 
 @layer components {

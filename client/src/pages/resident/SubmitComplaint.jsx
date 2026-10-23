@@ -213,36 +213,21 @@ export default function SubmitComplaint() {
     api.get('/categories').then((res) => setCategories(sortCategories(res.data))).catch(() => {});
   }, []);
 
-  // Shared iOS zoom-out trick; the plain text fields only need this part.
-  const resetViewport = () => {
-    const viewportMeta = document.querySelector('meta[name="viewport"]');
-    if (viewportMeta) {
-      viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-      // Restore the original accessible viewport shortly after
-      setTimeout(() => {
-        viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
-      }, 150);
-    }
-  };
-
   const handleFocus = () => {
-    // Add a slight delay to allow the native iOS keyboard to animate up first
+    // Wait for the virtual keyboard to slide up
     setTimeout(() => {
-      // Scroll the anonymous toggle into view, aligning it to the bottom of the visible area
       if (anonymousRef.current) {
-        anonymousRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        // Scroll the anonymous toggle so it sits just above the keyboard
+        anonymousRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 300);
   };
 
   const handleBlur = () => {
-    // Force zoom back to normal (for iOS)
-    resetViewport();
-
-    // Smoothly scroll back to the top of the form so the user sees everything again
+    // When the user taps away, scroll back to the top smoothly
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 150);
+    }, 100);
   };
 
   function next() {
@@ -377,7 +362,6 @@ export default function SubmitComplaint() {
           placeholder="Search address or landmark"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onBlur={resetViewport}
           onKeyDown={(e) => e.key === 'Enter' && searchLocation()}
         />
         <button
@@ -485,7 +469,6 @@ export default function SubmitComplaint() {
                   placeholder="e.g. Fallen tree blocking the road"
                   value={otherText}
                   onChange={(e) => setOtherText(e.target.value)}
-                  onBlur={resetViewport}
                   autoFocus
                 />
               </div>
