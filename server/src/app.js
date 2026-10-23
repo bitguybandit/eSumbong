@@ -18,7 +18,16 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '2mb' }));
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, service: 'eSumbong API' }));
+app.get('/api/health', (_req, res) =>
+  res.json({
+    ok: true,
+    service: 'eSumbong API',
+    revision: process.env.RAILWAY_GIT_COMMIT_SHA?.slice(0, 7) || null,
+    // Lets the client/deploy check tell a current API from an older build that
+    // still mounts requireAuth on POST /api/uploads.
+    features: { guestUploads: true },
+  })
+);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoriesRoutes);
