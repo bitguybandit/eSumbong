@@ -413,23 +413,8 @@ export default function SubmitComplaint() {
                 </button>
               ))}
 
-              {/* Other */}
-              <button
-                type="button"
-                onClick={() => setCategoryId('other')}
-                className={`flex min-h-[84px] w-full flex-col items-center justify-center gap-2 rounded-2xl border bg-white p-3 text-center transition active:scale-[0.98] md:p-5 ${
-                  categoryId === 'other'
-                    ? 'border-blue-500 ring-2 ring-blue-200'
-                    : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
-                }`}
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-xl md:h-12 md:w-12 md:text-2xl">
-                  📦
-                </span>
-                <span className="w-full break-words text-xs font-medium leading-tight text-slate-800 md:text-sm">
-                  Other
-                </span>
-              </button>
+              {/* "Other" is not hardcoded: it is seeded in the database and
+                  arrives with the rest of the categories from /api/categories. */}
             </div>
 
             {categoryId === 'other' && (
