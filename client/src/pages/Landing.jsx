@@ -399,9 +399,9 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen overflow-x-hidden scroll-smooth bg-white text-slate-900">
+    <div className="min-h-screen overflow-x-clip scroll-smooth bg-white text-slate-900">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/85 backdrop-blur">
+      <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-8">
           <Link to="/" className="inline-flex items-center">
             <Logo size="sm" />
