@@ -52,6 +52,9 @@ export default function PhotoUpload({ onChange, onName, onMetadata, bucket = 'co
 
     try {
       const fd = new FormData();
+      // Must stay the untouched File from the <input>/drop: re-encoding it
+      // (canvas, base64, an image compressor) drops the EXIF camera tags the
+      // API reads to flag screenshots, so guests would lose that signal too.
       fd.append('file', file);
       fd.append('bucket', bucket);
       // Guest flows upload without any credential at all (see `skipAuth`).
